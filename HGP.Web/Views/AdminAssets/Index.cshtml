@@ -1,0 +1,457 @@
+﻿@model HGP.Web.Models.Admin.AdminAssetsHomeModel
+
+@{
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+    ViewBag.MainClass = "content_full_width";
+    ViewBag.Title = "Admin Assets";
+}
+
+<style type="text/css">
+</style>
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+    <div class="tt-icon-box-fixed text-align-left padding-bottom-5">
+        <div id="topTools" class="col-sm-6">
+            <span></span>
+        </div>
+        <div class="col-sm-3">
+            <a data-toggle="modal" href="#myUploadModal" class="btn btn-success pull-right header-btn hidden-mobile"><i class="fa fa-plus"></i> Upload Assets</a>
+        </div>
+        <div class="col-sm-3">
+            <a data-toggle="modal" href="#myUploadImagesModal" class="btn btn-success pull-right header-btn hidden-mobile"><i class="fa fa-plus"></i> Upload Images</a>
+        </div>
+    </div>
+
+    <!-- widget div-->
+    <div>
+        <div class="widget-body no-padding">
+            <div class="custom-scroll table-responsive">
+                <table id="jqgrid"></table>
+                <div id="pjqgrid"></div>
+            </div>
+        </div>
+        <!-- end widget content -->
+    </div>
+    <!-- end widget div -->
+</section>
+<!-- end widget grid -->
+
+
+<script id="assets-tmpl" type="text/html">
+    <tr>
+
+        <td class="dt-body-center">
+            <input class="editor-active" type="checkbox" data-bind="checked: Selected" /></
+        </td>
+        <td>
+            <div data-bind="template: { name: 'media-tmpl', if: Media().length > 0 }"></div>
+
+
+        </td>
+        <td>
+            <span data-bind="text: Title" /> <span data-bind="text: Manufacturer" /> <span data-bind="text: ModelNumber" />
+        </td>
+        <td>
+            <span data-bind="text: Location" />
+        </td>
+        <td>
+            <span data-bind="text: Category" />
+        </td>
+        <td class="date">
+            <span data-bind="text: Catalog" />
+        </td>
+        <td>
+            <span data-bind="text: Id" />
+        </td>
+    </tr>
+
+</script>
+
+<script id="media-tmpl" type="text/html">
+    <div data-bind="with: $data">
+        <img data-bind="attr: { src: 'https://s3-us-west-1.amazonaws.com/hgpmedia/' + myViewModel.model.SiteSettings.PortalTag() + '/t/' + $data.Media()[0].FileName() }" />
+    </div>
+
+
+</script>
+
+
+<!-- Upload Modal -->
+<div class="modal fade" id="myUploadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <img src="/content/img/excel.png" height="32" alt="SmartAdmin"> Upload assets from Excel file
+                </h1>
+            </div>
+            <div class="modal-body no-padding">
+                @using (Html.BeginRouteForm("PortalRoute", new { controller = "Upload", Action = "UploadAssets" }, FormMethod.Post, new { @class = "smart-form", role = "form", enctype = "multipart/form-data" }))
+                {
+                    <fieldset>
+                        <section>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">File input</label>
+                                <div class="col-md-10">
+                                    <input type="file" class="btn btn-default" id="fileData" name="fileData">
+                                    <p class="help-block">
+                                        Select an Excel file
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    </fieldset>
+                    <footer>
+                        <button type="submit" class="btn btn-primary">
+                            Upload
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Cancel
+                        </button>
+                    </footer>
+                }
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Images Modal -->
+<div class="modal fade" id="myUploadImagesModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <img src="/content/img/camera.png" height="32" alt="SmartAdmin"> Upload images
+                </h1>
+            </div>
+            <div class="modal-body no-padding">
+                @using (Html.BeginRouteForm("PortalRoute", new { controller = "Upload", Action = "UploadImages" }, FormMethod.Post, new { @class = "smart-form", role = "form", enctype = "multipart/form-data" }))
+                {
+                    <fieldset>
+                        <section>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">File input</label>
+                                <div class="col-md-10">
+                                    <input type="file" class="btn btn-default" id="fileData" name="fileData">
+                                    <p class="help-block">
+                                        Select an image or zip file
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    </fieldset>
+                    <footer>
+                        <button type="submit" class="btn btn-primary">
+                            Upload
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">
+                            Cancel
+                        </button>
+                    </footer>
+                }
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="myAssetModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body no-padding">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+    var idsOfSelectedRows = [];
+    var updateIdsOfSelectedRows = function (id, isSelected) {
+        var index = $.inArray(id, idsOfSelectedRows);
+        if (!isSelected && index >= 0) {
+            idsOfSelectedRows.splice(index, 1); // remove id from the list
+        } else if (index < 0) {
+            idsOfSelectedRows.push(id);
+        }
+    };
+
+    $("#myAssetModal").dialog({
+        autoOpen: false,
+        width: 768,
+        autoheight: true,
+
+        modal: true
+    });
+
+    var grid = $("#jqgrid").jqGrid({
+        url: '@Url.RouteUrl("PortalRoute", new {action = "GetAssetsData", controller = "AdminAssets"})',
+        datatype: 'json',
+        ajaxGridOptions: { contentType: 'application/json; charset=utf-8' },
+        jsonReader: { root: "Assets" },
+        height: 'auto',
+        postData: {
+            location: function () { return $("SelectedLocation").val(); }
+        },
+        colNames: ['Id', 'Hit #', 'Client Id #', 'Title', 'AvailForRedeploy', 'AvailForSale', 'Images', 'Is Visible', 'OwnerName', 'Location', 'Category', 'Status'],
+        colModel: [
+            {
+                name: 'Id',
+                index: 'Id',
+                hidden: true,
+            },
+            {
+                name: 'HitNumber',
+                index: 'HitNumber',
+                sortable: true,
+                search: true
+            },
+            {
+                name: 'ClientIdNumber',
+                index: 'ClientIdNumber',
+                sortable: true,
+            },
+            {
+                name: 'Title',
+                index: 'Title',
+                sortable: true,
+            },
+            {
+                name: 'AvailForRedeploy',
+                index: 'AvailForRedeploy',
+                formatter: 'date',
+                formatoptions: { srcformat: "ISO8601Long", newformat: "m/d/Y h:i A" },
+                sortable: true,
+                search: false
+            },
+            {
+                name: 'AvailForSale',
+                index: 'AvailForSale',
+                formatter: 'date',
+                formatoptions: { srcformat: "ISO8601Long", newformat: "m/d/Y h:i A" },
+                sortable: true,
+                search: false
+            },
+            {
+                name: 'Images', index: 'Images', width: 60, align: 'center'
+            },
+            {
+                name: 'IsVisible',
+                index: 'IsVisible',
+                sortable: true,
+                width: '80px',
+                editoptions: { value: "Yes:No" },
+                edittype: "checkbox"
+            },
+            {
+                name: 'OwnerName',
+                index: 'OwnerName',
+                sortable: true,
+            },
+            {
+                name: 'Location',
+                index: 'Location',
+                sortable: true,
+            },
+            {
+                name: 'Category',
+                index: 'Category',
+                sortable: true,
+            },
+            {
+                name: 'Status',
+                index: 'Status',
+                sortable: true,
+                width: '80px'
+            }
+        ],
+        rowNum: 25,
+        rowTotal: 2000,
+        loadonce: true,
+        rowList: [25, 50, 100],
+        pager: '#pjqgrid',
+        sortname: 'id',
+        toolbarfilter: true,
+        viewrecords: true,
+        sortorder: "asc",
+        onSelectRow: updateIdsOfSelectedRows,
+        onSelectAll: function (aRowids, isSelected) {
+            var i, count, id;
+            for (i = 0, count = aRowids.length; i < count; i++) {
+                id = aRowids[i];
+                updateIdsOfSelectedRows(id, isSelected);
+            }
+        },
+        loadComplete: function () {
+            var $this = $(this), i, count;
+            for (i = 0, count = idsOfSelectedRows.length; i < count; i++) {
+                $this.jqGrid('setSelection', idsOfSelectedRows[i], false);
+            }
+        },
+        caption: "",
+        multiselect: true,
+        multiboxonly: true,
+        autowidth: true,
+        toolbar: [true, "both"],
+    });
+
+
+    $("#jqgrid").jqGrid('navGrid', '#pjqgrid', { add: false, edit: false, del: true },
+    {},
+    {},
+    {
+        url: '@Url.RouteUrl("PortalRoute", new {action = "GridDeleteAssets", controller = "AdminAssets"})',
+            onclickSubmit: function (options, ids) {
+                var $self = $(this),
+                    selectedrows = ids.split(","),
+                    selectedData = [],
+                    i,
+                    l = selectedrows.length;
+
+                for (i = 0; i < l; i++) {
+                    selectedData.push($self.jqGrid("getRowData", selectedrows[i]).Id);
+                }
+
+                return {
+                    idsToDelete: JSON.stringify(selectedData)
+                }
+            }
+
+        },
+        {},
+        {});
+
+
+        //$("#edit_jqgrid").click(function () {
+        //    //debugger;
+        //    var rowdata = $("#jqgrid").jqGrid('getGridParam', 'selrow');
+        //    if (rowdata) {
+        //        var data = $("#jqgrid").jqGrid('getRowData', rowdata);
+        //        $("#myAssetModal").dialog('open');
+        //    }
+        //});
+
+        $("#jqgrid").jqGrid('navButtonAdd', '#pjqgrid', {
+            caption: "",
+            buttonicon: "ui-icon-pencil",
+            onClickButton: function () {
+                var action = '@Url.RouteUrl("PortalRoute", new { portaltag = Model.HeaderModel.PortalTag, action = "Edit", controller = "AdminAssets"  })';
+                var index = $("#jqgrid").jqGrid('getGridParam', 'selarrrow');
+                if (index && (index.length > 0)) {
+                    var $self = $(this);
+                    var id = $self.jqGrid("getCell", index, 'HitNumber');
+                    window.top.location = action + '/' + id;
+                }
+
+                //var s;
+                //s = $("#listAllSupplierPurchasesGrid").jqGrid('getGridParam', 'selarrrow');
+
+                //if (s.length > 0) {
+                //    // Make AJAX call to get the dynamic form content
+                //    $.ajax({
+                //        cache: false,
+                //        async: true,
+                //        type: 'POST',
+                //        url: "/TargetItems/MarkPurchasesPaidRequest",
+                //        data: {
+                //            PurchaseIds: JSON.stringify(s)
+                //        },
+                //        success: function (content) {
+                //            // Add the content to the div
+                //            $('#myAssetModal').html(content);
+                //            // Display the modal
+                //            $("#myAssetModal").dialog("open");
+                //        },
+                //        error: function (res, status, exception) {
+                //            alert(status + ": " + exception);
+                //        },
+                //        modal: true
+                //    });
+                //}
+            },
+            position: "first"
+        });
+
+
+
+        $("#jqgrid").jqGrid('inlineNav', "#pjqgrid");
+        $("#jqgrid").filterToolbar({ stringResult: true, searchOnEnter: false });
+
+
+/* Add tooltips */
+        $('.navtable .ui-pg-button').tooltip({
+            container: 'body'
+        });
+
+        $("#m1").click(function() {
+            var s;
+            s = jQuery("#jqgrid").jqGrid('getGridParam', 'selarrrow');
+            alert(s);
+        });
+
+        $("#m1s").click(function() {
+            jQuery("#jqgrid").jqGrid('setSelection', "13");
+        });
+
+        // remove classes
+        $(".ui-jqgrid").removeClass("ui-widget ui-widget-content");
+        $(".ui-jqgrid-view").children().removeClass("ui-widget-header ui-state-default");
+        $(".ui-jqgrid-labels, .ui-search-toolbar").children().removeClass("ui-state-default ui-th-column ui-th-ltr");
+        $(".ui-jqgrid-pager").removeClass("ui-state-default");
+        $(".ui-jqgrid").removeClass("ui-widget-content");
+
+        // add classes
+        $(".ui-jqgrid-htable").addClass("table table-bordered table-hover");
+        $(".ui-jqgrid-btable").addClass("table table-bordered table-striped");
+
+        $(".ui-pg-div").removeClass().addClass("btn btn-sm btn-primary");
+        $(".ui-icon.ui-icon-plus").removeClass().addClass("fa fa-plus");
+        $(".ui-icon.ui-icon-pencil").removeClass().addClass("fa fa-pencil");
+        $(".ui-icon.ui-icon-trash").removeClass().addClass("fa fa-trash-o");
+        $(".ui-icon.ui-icon-search").removeClass().addClass("fa fa-search");
+        $(".ui-icon.ui-icon-refresh").removeClass().addClass("fa fa-refresh");
+        $(".ui-icon.ui-icon-disk").removeClass().addClass("fa fa-save").parent(".btn-primary").removeClass("btn-primary").addClass("btn-success");
+        $(".ui-icon.ui-icon-cancel").removeClass().addClass("fa fa-times").parent(".btn-primary").removeClass("btn-primary").addClass("btn-danger");
+        $(".ui-icon.ui-icon-document").removeClass().addClass("fa fa-file-excel-o");
+        $(".ui-icon.ui-icon-seek-prev").wrap("<div class='btn btn-sm btn-default'></div>");
+        $(".ui-icon.ui-icon-seek-prev").removeClass().addClass("fa fa-backward");
+        $(".ui-icon.ui-icon-seek-first").wrap("<div class='btn btn-sm btn-default'></div>");
+        $(".ui-icon.ui-icon-seek-first").removeClass().addClass("fa fa-fast-backward");
+        $(".ui-icon.ui-icon-seek-next").wrap("<div class='btn btn-sm btn-default'></div>");
+        $(".ui-icon.ui-icon-seek-next").removeClass().addClass("fa fa-forward");
+        $(".ui-icon.ui-icon-seek-end").wrap("<div class='btn btn-sm btn-default'></div>");
+        $(".ui-icon.ui-icon-seek-end").removeClass().addClass("fa fa-fast-forward");
+
+        $(window).on('resize.jqGrid', function() {
+            $("#jqgrid").jqGrid('setGridWidth', $("#content").width());
+        });
+
+        $("#jqgrid_iladd").hide();
+        $("#jqgrid_iledit").hide();
+        $("#jqgrid_ilcancel").hide();
+        $("#jqgrid_ilsave").hide();
+
+        var toolbarClone = $('#pjqgrid_left').clone(true);
+        // Assuming that your grid's ID is myGrid
+        $('#topTools').prepend(toolbarClone);
+
+    </script>
+}

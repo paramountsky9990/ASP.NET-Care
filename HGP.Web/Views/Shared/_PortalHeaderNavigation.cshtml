@@ -1,0 +1,156 @@
+﻿@using AspNet.Identity.MongoDB
+@using HGP.Web.Infrastructure
+@using Microsoft.AspNet.Identity
+@model HGP.Web.Models.PageModel
+@if (Request.IsAuthenticated)
+{
+    <nav role="navigation">
+        <ul id="menu-main-nav">
+            <li class="menu-item-has-children parent @Html.RouteIf("inbox", "active")">
+                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "inbox"})">
+                    <i class="fa fa-lg fa-fw fa-inbox"></i>
+                    <span>
+                        <strong>Inbox</strong>
+                        <span class="navi-description">&nbsp;</span>
+                    </span>
+                    <b class="badge"> <span>@(Model.HeaderModel.InBoxCount  + Model.HeaderModel.PendingDraftAssetsCount)</span> </b>
+                </a>
+            </li>
+            <li class="parent @Html.RouteIf("list", "active")">
+                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list"})">
+                    <i class="fa fa-lg fa-fw fa-list"></i>
+                    <span>
+                        <strong>Browse</strong>
+                        <span class="navi-description">&nbsp;</span>
+                    </span>
+                </a>
+                <ul class="sub-menu">
+                    @if (Model.HeaderModel.Categories != null)
+                    {
+                        foreach (var cat in Model.HeaderModel.Categories)
+                        {
+                            <li>
+                                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list", category = cat.UriString})">
+                                    <span>@cat.Name (@cat.Count)</span>
+                                    &nbsp;
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </li>
+            <li class="parent @Html.RouteIf("request", "active")">
+                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "request"})">
+                    <i class="fa fa-lg fa-fw fa-pencil-square-o"></i>
+                    <span>
+                        <strong>Transfers</strong>
+                        <span class="navi-description">&nbsp;</span>
+                    </span>
+                    <b class="badge"> <span>@Model.HeaderModel.TransfersCount</span> </b>
+                </a>
+                <ul class="sub-menu">
+                    <li>
+                        <a href="@Url.RouteUrl("PortalRoute", new {action = "list", controller = "request", id = "pending"})">
+                            <span>Pending</span>
+                            <b class="badge"> <span>@(Model.HeaderModel.PendingTransfersCount + Model.HeaderModel.PendingDraftAssetsCount)</span> </b>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.RouteUrl("PortalRoute", new {action = "list", controller = "request", id = "closed"})">
+                            <span>Closed</span>
+                            <b class="badge"> <span>@Model.HeaderModel.ClosedTransfersCount</span> </b>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @{
+                if (User.IsInRole("SuperAdmin") || User.IsInRole("CareAdmin") || User.IsInRole("ClientAdmin"))
+                {
+                    <li class="parent @Html.RouteIf("adminassets", "active")">
+                        <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "adminassets"})">
+                            <i class="fa fa-lg fa-fw fa-cogs"></i>
+                            <span>
+                                <strong>Manage</strong>
+                                <span class="navi-description">&nbsp;</span>
+                            </span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "adminassets"})"><span>Assets</span>&nbsp;</a>
+                            </li>
+                            <li>
+                                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "user"})"><span>Users</span>&nbsp;</a>
+                            </li>
+                            @{if (User.IsInRole("SuperAdmin"))
+                                {
+                                    <li>
+                                        <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "adminhome"})"><span>ADMIN PORTAL</span>&nbsp;</a>
+                                    </li>                        
+                                }
+                            }
+                        </ul>
+                        </li>
+                        <li class="parent @Html.RouteIf("report", "active")">
+                            <a href="@Url.RouteUrl("PortalRoute", new {action = "disposition", controller = "report"})">
+                                <i class="fa fa-lg fa-fw fa-file-text-o"></i>
+                                <span>
+                                    <strong>Reports</strong>
+                                    <span class="navi-description">&nbsp;</span>
+                                </span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="@Url.RouteUrl("PortalRoute", new {action = "disposition", controller = "report"})"><span>Asset Disposition</span>&nbsp;</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.RouteUrl("PortalRoute", new {action = "allassets", controller = "report"})"><span>All Assets</span>&nbsp;</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.RouteUrl("PortalRoute", new {action = "availableassets", controller = "report"})"><span>Available Assets</span>&nbsp;</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.RouteUrl("PortalRoute", new {action = "expiredassets", controller = "report"})"><span>Expired Assets</span>&nbsp;</a>
+                                </li>
+                                <li>
+                                    <a href="@Url.RouteUrl("PortalRoute", new {action = "allrequests", controller = "report"})"><span>Transfers</span>&nbsp;</a>
+                                </li>
+                                @if (Model.SiteSettings.Features.Contains("wishlist"))
+                                {
+                                    <li>
+                                        <a href="@Url.RouteUrl("PortalRoute", new {action = "allwishes", controller = "report"})"><span>All Wishes</span>&nbsp;</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                }
+            }
+            <li class="parent @Html.RouteIf("settings", "active")">
+                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "settings"})">
+                    <i class="fa fa-lg fa-fw fa-gear"></i>
+                    <span>
+                        <strong>Settings</strong>
+                        <span class="navi-description">&nbsp;</span>
+                    </span>
+                </a>
+                <ul class="sub-menu">
+                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("CareAdmin") || User.IsInRole("ClientAdmin"))
+                    {
+                        <li>
+                            <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "settings"})"><span>Site settings</span>&nbsp;</a>
+                        </li>
+                    }
+                    <li>
+                        <a href="@Url.RouteUrl("PortalRoute", new {action = "userprofile", controller = "account"})"><span>Your Profile</span>&nbsp;</a>
+                    </li>
+                    @{if (User.IsInRole("SuperAdmin"))
+                        {
+                            <li>
+                                <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "adminhome"})"><span>ADMIN PORTAL</span>&nbsp;</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </li>
+        </ul>
+    </nav>
+}

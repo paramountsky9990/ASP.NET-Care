@@ -1,0 +1,121 @@
+﻿@model HGP.Web.Models.Admin.LocationCreateModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div id="content">
+
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-6">
+
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false">
+                <div class="widget-body no-padding">
+
+                    @using (Html.BeginRouteForm("AdminPortalRoute", new { controller = "AdminLocations", portalTag = Model.SiteSettings.PortalTag, action = "Create" },
+                        FormMethod.Post, new { id = "locations-createform", @class = "smart-form", role = "form", novalidate = "novalidate" }))
+                    {
+
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+
+                        @Html.HiddenFor(x => x.SiteId)
+                        
+                        <header>Location Information</header>
+                        <fieldset>
+
+                            <div class="row">
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                        @Html.TextBoxFor(m => m.Name, new { @placeholder = "Location name" })
+                                    </label>
+                                </section>
+                            </div>
+                        </fieldset>
+
+
+                        <header>Address</header>
+
+                        <fieldset>
+
+                            <div class="row">
+                                <section class="col col-4 form-group">
+                                    <label class="input">
+                                        @Html.TextBoxFor(m => m.Address.City, new { @placeholder = "City" })
+                                    </label>
+                                </section>
+
+                                <section class="col col-4 form-group">
+                                    <label class="input">
+                                        @Html.TextBoxFor(m => m.Address.State, new { @placeholder = "State" })
+                                    </label>
+                                </section>
+                                
+                                <section class="col col-3 form-group">
+                                    <label class="input">
+                                        @Html.TextBoxFor(m => m.Address.Zip, new { @placeholder = "Zip code" })
+                                    </label>
+                                </section>
+                            </div>
+
+                            <section class="form-group">
+                                <label for="Street1" class="input">
+                                    @Html.TextBoxFor(m => m.Address.Street1, new { @placeholder = "Street" })
+                                </label>
+                            </section>
+
+                            <section class="form-group">
+                                <label for="Street2" class="input">
+                                    @Html.TextBoxFor(m => m.Address.Street2, new { @placeholder = "Street" })
+                                </label>
+                            </section>
+
+                        </fieldset>
+
+                        <header>Location Contact</header>
+
+                        <fieldset>
+                            <div class="row">
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                        @Html.TextBoxFor(m => m.OwnerName, new { @placeholder = "Owner's name", @class = "" })
+                                    </label>
+                                </section>
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                        @Html.TextBoxFor(m => m.OwnerPhone, new { @placeholder = "Phone", @class = "" })
+                                    </label>
+                                </section>
+                            </div>
+                            <div class="row">
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                        @Html.TextBoxFor(m => m.OwnerEmail, new { @placeholder = "Email", @class = "" })
+                                    </label>
+                                </section>
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                    </label>
+                                </section>
+                            </div>
+                        </fieldset>
+
+                        <footer>
+                            <button type="submit" class="btn btn-primary">
+                                Save
+                            </button>
+                        </footer>
+
+
+                    }
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+@section Scripts {
+
+
+}
+

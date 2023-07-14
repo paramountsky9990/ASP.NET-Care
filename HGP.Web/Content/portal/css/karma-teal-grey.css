@@ -1,0 +1,158 @@
+/*---------------------*/
+/* Header 
+/*---------------------*/
+.top-block,
+.top-block ul.sf-menu li ul,
+#footer-callout {
+	background: #19292E;
+}
+
+#tt-slider-full-width {
+	background: #0D1D22;
+}
+
+#footer-callout {
+	border-bottom: 1px solid #4E646D;
+}
+
+/* primary color scheme (header / footer background) */
+.header-holder.tt-header-holder-tall,
+.header-holder.tt-logo-center,
+.header-holder,
+#footer {
+	border-top: 1px solid #4E646D;
+	background-color: #19292E;
+	background-image: linear-gradient(to bottom, #3A525C, #19292E); /* required first in the list for IE11 */
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#3A525C), to(#19292E));
+	background-image: -webkit-linear-gradient(top, #3A525C, #19292E);
+	background-image: -moz-linear-gradient(top, #3A525C, #19292E);
+	background-image: -webkit-linear-gradient(top, #3A525C, #19292E);
+	background-image: -o-linear-gradient(top, #3A525C, #19292E);
+	background-image: ms-linear-gradient(to bottom, #3A525C, #19292E);
+	-pie-background: linear-gradient(to bottom, #3A525C, #19292E);
+}
+
+.top-block,
+.top-block a,
+#header .toolbar-left li,
+#header .toolbar-right li {
+	color: rgba(255,255,255, 0.6);
+}
+
+#tt-mobile-menu-button span:after,
+.tt-icon-box span.fa-stack {
+	color: #60777F;	
+}
+
+/*---------------------*/
+/* Main Menu
+/*---------------------*/
+#menu-main-nav a span.navi-description,
+/* reset search/404 navi-description so "blog" isn't active */
+.search-header #menu-main-nav li.current_page_parent a span.navi-description,
+.error-header #menu-main-nav li.current_page_parent a span.navi-description,
+.top-block .top-holder ul.sf-menu li .sub-menu li a:hover {
+	color: #80979F;
+}
+
+/* dropdown active link color */
+#menu-main-nav .drop ul li.current-menu-item a,
+#menu-main-nav .drop ul li.current-menu-ancestor a,
+#menu-main-nav .drop ul li.current-menu-parent ul li.current-menu-item a,
+#menu-main-nav .drop ul li.current-menu-ancestor ul li.current-menu-ancestor a,
+#menu-main-nav .drop ul li.current-menu-ancestor ul li.current-menu-ancestor ul li.current-menu-item a {
+	color: #7A93A1;
+}
+
+/* dropdown menu bg color */
+#menu-main-nav .drop .c,
+#menu-main-nav li.parent:hover,
+.tt-logo-center #menu-main-nav li.parent:first-child:hover,
+#wrapper.tt-uberstyling-enabled #megaMenu ul.megaMenu > li.menu-item.tt-uber-parent:hover,
+#wrapper.tt-uberstyling-enabled #megaMenu ul.megaMenu li.menu-item ul.sub-menu {
+	background: #111C20;
+}
+
+/* dropdown link:hover bg color */
+#menu-main-nav .drop ul a:hover,
+#menu-main-nav .drop ul li.current-menu-item.hover a,
+#menu-main-nav .drop ul li.parent.hover a,
+#menu-main-nav .drop ul li.parent.hover a:hover,
+#menu-main-nav .drop ul li.hover ul li.hover a,
+#menu-main-nav .drop ul li.hover ul li.hover a:hover,
+#menu-main-nav .drop ul li.current-menu-ancestor.hover a,
+#menu-main-nav .drop ul li.current-menu-ancestor.hover ul a:hover,
+#menu-main-nav .drop ul li.current-menu-ancestor ul li.current-menu-ancestor ul li.current-menu-item a:hover,
+.top-block .top-holder ul.sf-menu li .sub-menu li a:hover,
+#wrapper.tt-uberstyling-enabled .header-area #megaMenu ul li.menu-item.ss-nav-menu-mega ul.sub-menu li.menu-item > a:hover {
+	background: #435961;
+	color:#FFF;
+}
+
+/* reset dropdown link:hover on non-active items */
+#menu-main-nav .drop ul li.parent.hover ul a,
+#menu-main-nav .drop ul li.hover ul li.hover ul li a,
+#menu-main-nav .drop ul li.current-menu-ancestor.hover ul a {
+	background:none;	
+}
+
+
+/*---------------------*/
+/* Footer
+/*---------------------*/
+#footer_bottom {
+	background: #111C20 url(../images/skins/bg-footer-bottom-teal-grey.png) top center repeat-x;
+}
+
+.footer-content a,
+#footer_bottom a,
+#footer .blogroll li,
+#mc_signup .mc_required,
+.mc_required,
+#mc-indicates-required,
+#footer ul.tt-recent-posts li p {
+	color: rgba(255,255,255, 0.4);
+}
+
+#footer .blogroll a,
+#footer ul.tt-recent-posts h4 {
+	color: #CCC;
+}
+
+#footer h3 {
+	border-bottom: 1px solid rgba(255,255,255, 0.17);
+}
+
+#footer,
+#footer p,
+#footer ul,
+#footer_bottom,
+#footer_bottom p,
+#footer_bottom ul,
+#footer #mc_signup_form label {
+	color: #BCBCBC;
+}
+
+/*---------------------*/
+/* IE8
+/*---------------------*/
+/* IE8 does not support rgba. hex# colors provided below */
+.ie8 .top-block,
+.ie8 .top-block a,
+.ie8 #header .toolbar-left li,
+.ie8 #header .toolbar-right li {
+	color: #B1B1B1;
+}
+
+.ie8 .footer-content a,
+.ie8 #footer_bottom a,
+.ie8 #footer .blogroll li,
+.ie8 #mc_signup .mc_required,
+.ie8 .mc_required,
+.ie8 #mc-indicates-required {
+	color: #7A93A1;
+}
+
+.ie8 #footer h3 {
+	border-bottom: 1px solid #5F7984;
+}

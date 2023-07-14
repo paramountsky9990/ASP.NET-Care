@@ -1,0 +1,434 @@
+﻿/*
+ * It is advised not to edit the smartadmin_production.css
+ * as this will override any changes you make in the 
+ * later versions of this theme. 
+ * 
+ * We advise that you use use this CSS to override 
+ * SmartAdmin styles. 
+ * 
+ * Rename the stylesheet to whatever your liking so it will stay
+ * unique to you with each update of SmartAdmin.
+ */
+.padding-top-0 {
+    padding-top: 0 !important;
+}
+
+.padding-top-5 {
+    padding-top: 5px !important;
+}
+
+.padding-bottom-0 {
+    padding-bottom: 0 !important;
+}
+
+.padding-bottom-5 {
+    padding-bottom: 5px !important;
+}
+
+.padding-left-5 {
+    padding-left: 5px !important;
+}
+
+.padding-left-10 {
+    padding-left: 10px !important;
+}
+
+.padding-right-5 {
+    padding-right: 5px !important;
+}
+
+.padding-right-10 {
+    padding-right: 10px !important;
+}
+
+.margin-top-0 {
+    margin-top: 0 !important;
+}
+
+.margin-top-5 {
+    margin-top: 5px !important;
+}
+
+.margin-bottom-0 {
+    margin-bottom: 0 !important;
+}
+
+.margin-bottom-5 {
+    margin-bottom: 5px !important;
+}
+
+.margin-left-5 {
+    margin-left: 5px !important;
+}
+
+.margin-left-10 {
+    margin-left: 10px !important;
+}
+
+.margin-right-5 {
+    margin-right: 5px !important;
+}
+
+.margin-right-10 {
+    margin-right: 10px !important;
+}
+
+.margin-right-15 {
+    margin-right: 15px !important;
+}
+
+.margin-top-05 {
+    margin-top: 0.5em;
+}
+
+.margin-top-10 {
+    margin-top: 1.0em;
+}
+
+.margin-top-15 {
+    margin-top: 1.5em;
+}
+
+.margin-top-20 {
+    margin-top: 2.0em;
+}
+
+.margin-top-25 {
+    margin-top: 2.5em;
+}
+
+.margin-top-30 {
+    margin-top: 3.0em;
+}
+
+.margin-bottom-05 {
+    margin-bottom: 0.5em;
+}
+
+.margin-bottom-10 {
+    margin-bottom: 1.0em;
+}
+
+.margin-bottom-15 {
+    margin-bottom: 1.5em;
+}
+
+.margin-bottom-20 {
+    margin-bottom: 2.0em;
+}
+
+.margin-bottom-25 {
+    margin-bottom: 2.5em;
+}
+
+.margin-bottom-30 {
+    margin-bottom: 3.0em;
+}
+
+/*.smart-form {
+    .input {
+        input {
+            padding: 4px 10px !important;
+        }
+    }
+}*/
+/* SmartForm Bootstrap Validation */
+#extr-page h4.paragraph-header {
+    width: auto;
+}
+
+#extr-page .smart-form .alert {
+    margin: 4px;
+}
+
+    #extr-page .smart-form .alert li {
+        margin-left: 14px;
+        list-style: none;
+    }
+
+        #extr-page .smart-form .alert li:before {
+            content: "\f071";
+            font-family: FontAwesome;
+            position: absolute;
+            left: 14px;
+        }
+
+#extr-page .smart-form div + fieldset {
+    padding-top: 15px;
+}
+
+/* Shopping cart */
+
+#cart-group > a {
+    display: inline-block;
+    height: 39px;
+    float: left;
+}
+
+#cart-group a#cart {
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    cursor: default !important;
+    display: inline-block;
+    font-weight: bold;
+    height: 24px;
+    width: 24px;
+    padding: 2px;
+    text-align: center;
+    text-decoration: none !important;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    background-color: #f8f8f8;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f1f1f1));
+    background-image: -webkit-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -moz-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -ms-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: -o-linear-gradient(top, #f8f8f8, #f1f1f1);
+    background-image: linear-gradient(top, #f8f8f8, #f1f1f1);
+    border: 1px solid #bfbfbf;
+    color: #c4bab6;
+    font-size: 19px;
+    margin: 10px 0 0 0;
+    position: relative;
+    color: #6d6a69;
+}
+
+    #cart-group a#cart:hover {
+        border: 1px solid #bfbfbf;
+        transition: all 0.0s;
+        cursor: pointer !important;
+        -webkit-box-shadow: inset 0px 0px 4px 1px rgba(0, 0, 0, 0.08);
+        box-shadow: inset 0px 0px 4px 1px rgba(0, 0, 0, 0.08);
+    }
+
+#cart-group * {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+#cart b.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    cursor: pointer;
+    background: #0091d9;
+    display: inline-block;
+    font-size: 10px;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.07);
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    padding: 2px 4px 3px 4px;
+    text-align: center;
+    line-height: normal;
+}
+
+#cart.active .badge {
+    background: #006fa6 !important;
+}
+
+/* Carousel */
+
+.carousel {
+    margin-bottom: 0;
+    padding: 0 40px 10px 40px;
+}
+/* The controlsy */
+.carousel-control {
+    left: -12px;
+    height: 40px;
+    width: 40px;
+    background: none repeat scroll 0 0 #222222;
+    border: 4px solid #FFFFFF;
+    border-radius: 23px 23px 23px 23px;
+    margin-top: 40px;
+}
+
+    .carousel-control.right {
+        right: -12px;
+    }
+/* The indicators */
+.carousel-indicators {
+    right: 50%;
+    top: auto;
+    bottom: -10px;
+    margin-right: -19px;
+}
+    /* The colour of the indicators */
+    .carousel-indicators li {
+        background: #cecece;
+    }
+
+    .carousel-indicators .active {
+        background: #428bca;
+    }
+
+
+.list-side-bar {
+    height: 100%;
+    position: absolute;
+    display: block;
+    width: 200px;
+    padding: 10px 0 10px 14px;
+    -webkit-overflow-scrolling: touch;
+    z-index: 1;
+}
+
+    .list-side-bar::-webkit-scrollbar {
+        width: 0 !important;
+    }
+
+    .list-side-bar h1 {
+        font-weight: normal;
+        font-size: 14px;
+        display: block;
+        padding: 0px 15px;
+        text-transform: uppercase;
+        color: #838383;
+    }
+
+        .list-side-bar h1 a {
+            font-size: 14px;
+            margin-top: -2px;
+        }
+
+    .list-side-bar h6 .tooltip {
+        text-transform: none !important;
+    }
+
+    .list-side-bar > .btn {
+        margin-bottom: 35px;
+    }
+
+    .list-side-bar .input-group {
+        margin-bottom: 25px;
+    }
+
+.list-side-bar-menu-lg li a:hover {
+    background: rgba(0, 0, 0, 0.43);
+}
+
+.list-side-bar-menu-lg li.active a {
+    background: rgba(0, 0, 0, 0.43);
+    border-bottom-color: rgba(255, 255, 225, 0.15);
+}
+
+.product-list-detail {
+    color: #767676;
+    font-size: 12px;
+}
+
+nav ul .active > a,
+nav ul li.open > a,
+nav ul li.open > a b {
+    color: #333 !important;
+}
+
+    nav ul .active > a:hover, nav ul li.open > a:hover, nav ul li.open > a:hover b {
+        color: #fff !important;
+    }
+
+.ribbon-button-alignment,
+.page-title > i {
+    display: none !important;
+}
+
+#sparks li h5 {
+    margin-top: 0 !important;
+}
+
+.login-info > span,
+.login-info {
+    border-color: transparent !important;
+    background: #F4F4F2;
+}
+
+.login-info {
+    box-shadow: none !important;
+}
+
+#ribbon {
+    padding: 12px 22px 0 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 25px 13px 20px 13px;
+    height: 61px;
+}
+
+    #ribbon .breadcrumb {
+        float: right;
+    }
+
+.page-title {
+    position: absolute;
+    top: -85px;
+    left: 30px;
+}
+
+    .page-title span,
+    .page-title {
+        color: #fff !important;
+    }
+
+#content > .row > .col-xs-12 + div {
+    display: none;
+}
+
+.demo {
+    display: none !important;
+}
+
+nav ul li {
+    border-bottom: 1px solid #ddd;
+    background: #F4F4F2 ;
+}
+
+    nav ul li a:active {
+        background: none repeat scroll 0 0 #334c74 !important;
+    }
+
+#project-selector:hover, .project-selector:hover {
+    color: #fff;
+}
+
+.login-info a:hover {
+    color: #677ea3;
+}
+
+.glyphicon {
+    font-family: "Glyphicons Halflings" !important;
+}
+
+.hidden-menu #hide-menu > :first-child > a {
+    background-color: #677ea3;
+    background-image: none;
+}
+
+:-ms-full-screen #fullscreen > :first-child > a {
+    background-color: #677ea3;
+    background-image: none;
+}
+
+:-o-full-screen #fullscreen > :first-child > a {
+    background-color: #677ea3;
+    background-image: none;
+}
+
+:-webkit-full-screen #fullscreen > :first-child > a {
+    background-color: #677ea3;
+    background-image: none;
+}
+
+:-moz-full-screen #fullscreen > :first-child > a {
+    background-color: #677ea3;
+    background-image: none;
+}
+
+:full-screen #fullscreen > :first-child > a {
+    background-color: #677ea3;
+    background-image: none;
+}

@@ -1,0 +1,36 @@
+﻿<p>
+    This email is to inform you that an item you requested using CARE has been DENIED. Please review the details below.<br />   <br />
+
+    Denied by:<br />
+    <a href="mailto:[ApprovingManagerEmail]">[ApprovingManagerName]</a><br /><br />
+
+    <b>Comment:</b><br />
+    [AssetRequestDetail.TaskComment]
+    <br />   <br />
+
+    <img id="assetImageDeniedET" class="padding-bottom-10 margin-left-10 img-container"
+         src="[PrimaryImageUrl]" alt="" /> <br /><br />
+
+    <b>Asset Description</b><br />
+    Title: [AssetRequestDetail.Title]<br />
+    Manufacturer: [AssetRequestDetail.Manufacturer]<br />
+    Model: [AssetRequestDetail.ModelNumber]<br />
+    Location: [AssetRequestDetail.LocationName]<br />
+    Hit Number:  [AssetRequestDetail.HitNumber]<br />
+    [if AssetRequestDetail.HasClientIdNumber]
+    ClientID Number : [AssetRequestDetail.ClientIdNumber]<br />
+    [end]
+    [if AssetRequestDetail.DisplayBookValue]
+    Book value: [AssetRequestDetail.FormattedBookValue]<br />
+    [else]
+    Book value: [SiteSettings.BookValueMessage]<br />
+    [end]
+    [if AssetRequestDetail.HasCustomData]
+    [foreach AssetRequestDetail.CustomDataPairs]
+    [Key] - [Value]<br />
+    [end]
+    [end]
+    <br />
+    Link: [AssetURL]
+    <br />   <br />
+</p>

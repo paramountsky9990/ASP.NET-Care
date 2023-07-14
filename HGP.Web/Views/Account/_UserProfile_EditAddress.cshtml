@@ -1,0 +1,65 @@
+﻿@model HGP.Web.Models.Account.EditAddressModel
+@using (Html.BeginRouteForm("PortalRoute", new { controller = "Account", action = "EditAddress" }, FormMethod.Post, new
+                {
+                    @class = "smart-form contact-form form-horizontal padding-bottom-25 col-md-10",
+                    role = "form",
+                    novalidate = "novalidate"
+                }))
+{
+
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.ValidationSummary()
+    </div>
+    @Html.HiddenFor(x => x.UserId)
+
+    <header class="section-heading-horizontal"><span>Address</span></header>
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.LabelFor(m => m.Address.Street1, new { @class = "address" })
+            @Html.TextBoxFor(m => m.Address.Street1, new { @class = "form-control", @placeholder = "Street" })
+            @Html.ValidationMessageFor(m => m.Address.Street1, "", new { @class = "required" }, "em")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.LabelFor(m => m.Address.Street2, new { @class = "address" })
+            @Html.TextBoxFor(m => m.Address.Street2, new { @class = "form-control", @placeholder = "Street" })
+            @Html.ValidationMessageFor(m => m.Address.Street2, "", new { @class = "required" }, "em")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-2">
+            @Html.LabelFor(m => m.Address.City, new { @class = "city" })
+            @Html.TextBoxFor(m => m.Address.City, new { @class = "form-control", @placeholder = "City" })
+            @Html.ValidationMessageFor(m => m.Address.City, "", new { @class = "required" }, "em")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-2">
+            @Html.LabelFor(m => m.Address.State, new { @class = "name" })
+            @Html.TextBoxFor(m => m.Address.State, new { @class = "form-control", @placeholder = "State" })
+            @Html.ValidationMessageFor(m => m.Address.State, "", new { @class = "required" }, "em")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-2">
+            @Html.LabelFor(m => m.Address.Zip, new { @class = "name" })
+            @Html.TextBoxFor(m => m.Address.Zip, new { @class = "form-control", @placeholder = "Zip" })
+            @Html.ValidationMessageFor(m => m.Address.Zip, "", new { @class = "required" }, "em")
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.LabelFor(m => m.Address.Country, new { @class = "name" })
+            @Html.TextBoxFor(m => m.Address.Country, new { @class = "form-control", @placeholder = "Country" })
+            @Html.ValidationMessageFor(m => m.Address.Country, "", new { @class = "required" }, "em")
+        </div>
+    </div>
+    <div class="form-group alignright ">
+        <div class="col-md-10 ">
+            <input type="submit" value="Update Address" class="btn btn-large btn-primary" />
+        </div>
+    </div>
+}
+

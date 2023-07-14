@@ -1,0 +1,338 @@
+﻿@model HGP.Web.Models.List.ListHomeModel
+@{
+    ViewBag.Title = "Index";
+    ViewBag.MainClass = "content_left_sidebar";
+    Layout = "~/Views/Shared/_PortalListLayout.cshtml";
+}
+
+    <div class="row">
+        <section id="widget-grid" class="col-md-12 " style="margin-top: 20px; margin-left: 40px;">
+            <header class="margin-bottom-10">
+            @if (Model.SiteSettings.Features.Contains("wishlist"))
+            {
+                if (!string.IsNullOrEmpty(Model.HeaderModel.SearchText))
+                {
+                    <h4><strong>Search: "@Model.HeaderModel.SearchText" - </strong><strong>@Model.HeaderModel.ResultCount @MyHelpers.Pluralize(Html, "asset", @Model.HeaderModel.ResultCount)</strong>
+                        <a href="#" class="pull-right " onclick="fnAddSerachCriteriaToWishList('@Model.HeaderModel.SearchText');">Can't find what you're looking for? Create a wish.</a></h4>
+                }
+                else
+                {
+                    <h4><strong>@Model.Category</strong></h4>
+                    <h4><strong>(@Model.HeaderModel.ResultCount @MyHelpers.Pluralize(Html, "asset", @Model.HeaderModel.ResultCount))</strong></h4>
+                }
+            }
+            else
+            {
+                <h4><strong>@Model.Category</strong></h4>
+                <h4><strong>(@Model.HeaderModel.ResultCount @MyHelpers.Pluralize(Html, "asset", @Model.HeaderModel.ResultCount))</strong></h4>
+            }
+            </header>
+            @if (Model.Assets.Any())
+            {
+                <div class="row" style="margin-top: 20px">
+                    <div class="widget-body">
+                        <div class="custom-scroll table-responsive">
+                            @Html.Partial("Index_ListBody", Model)
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <text>
+                    <div class="row" style="height: 100px; vertical-align: bottom;">
+                        <table id="" class="padding-top-15" style="width: 100%;">
+                            <tr>
+                                <td>
+                                    @if (Model.SiteSettings.Features.Contains("wishlist"))
+                                    {
+                                        <br /><h4 class="padding-10">
+                                            Can't find what you're looking for? We can locate it for you. Send a request to
+                                            <a href="mailto:caresupport@hgpauction.com">caresupport@hgpauction.com</a> for a quick response or
+                                            <a href="#" onclick="fnAddSerachCriteriaToWishList('@Model.HeaderModel.SearchText');">create a wish to be notified when the asset becomes available.</a>
+                                        </h4>
+                                    } else 
+                                    {
+                                        <br /><h4 class="padding-10">
+                                            Can't find what you're looking for? We can locate it for you. Send a request to
+                                            <a href="mailto:caresupport@hgpauction.com">caresupport@hgpauction.com</a> for a quick response.
+                                        </h4>
+                                    }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </text>
+            }
+        </section>
+    </div>
+
+<style>
+    body .modal-dialog {
+        width: 850px;
+    }
+</style>
+
+
+<div class="modal fade" id="myAssetModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+            </div>
+            <div class="modal-body no-padding">
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+
+
+
+
+@section scripts
+{
+    <script src="~/Scripts/waypoints/waypoints.debug.js"></script>
+    <script>
+        function GetClosingTimeString(minutesRemaining) {
+            if (minutesRemaining < 1)
+                return "<1m";
+
+            if (minutesRemaining < 60)
+                return minutesRemaining + 'm';
+
+            var daysRemaining = Math.floor(minutesRemaining / 1440);
+            var hoursRemaining = Math.floor((minutesRemaining % 1440) / 60);
+
+            if (daysRemaining > 1)
+                return daysRemaining + 'd ' + hoursRemaining + 'h';
+
+            return hoursRemaining + 'h';
+        };
+
+        ko.bindingHandlers.money = {
+            update: function(element, valueAccessor, allBindingsAccessor) {
+                var value = valueAccessor(), allBindings = allBindingsAccessor();
+                var valueUnwrapped = ko.utils.unwrapObservable(value);
+                var m = "";
+                if (valueUnwrapped) {
+                    m = valueUnwrapped;
+                    if (m >= 0) {
+                        m = numeral(m).format('$0,0'); //http://numeraljs.com/
+                    }
+                }
+                if (m > '') {
+                    $(element).text(m);
+                }
+            }
+        };
+
+        ko.bindingHandlers.timeRemaining = {
+            update: function(element, valueAccessor, allBindingsAccessor) {
+                var value = valueAccessor(), allBindings = allBindingsAccessor();
+                var valueUnwrapped = ko.utils.unwrapObservable(value);
+
+                var m = "";
+                if (valueUnwrapped) {
+                    m = valueUnwrapped;
+                    if (m) {
+                        m = GetClosingTimeString(m);
+                    }
+                }
+                $(element).text(m);
+            }
+        };
+
+        var initialHeaderData = @Html.Raw(Model.HeaderModel.JsonData);
+
+        var headerViewModel = function() {
+            var self = this;
+            self.headerModel = ko.mapping.fromJS(initialHeaderData);
+        };
+
+        var initialData = @Html.Raw(Model.JsonData);
+        var assetUrl = '@MyHelpers.AssetUrl(Url, Html, "Title", Model.SiteSettings.PortalTag, "HitNumber")';
+
+        var viewModel = function() {
+            var self = this;
+
+            self.model = ko.mapping.fromJS(initialData);
+            self.addToCart = function(hitNumber) {
+                myHeaderViewModel.headerModel.Request.AssetCount(myHeaderViewModel.headerModel.Request.AssetCount() + 1);
+                addToServerCart(hitNumber);
+                $('#myAssetModal').modal('hide');
+            };
+        };
+
+        var myViewModel = new viewModel();
+        self.model = ko.mapping.fromJS(initialData);
+        ko.applyBindings(myViewModel, $("#widget-grid").get(0));
+
+        // Needed to prevent double-trigger
+        Waypoint.destroyAll();
+        if ($('#list-footer').length)
+        {
+            var waypoint = new Waypoint({
+                element: $('#list-footer')[0],
+                handler: function(direction) {
+                    // Only extend when scrolling down to prevent additional AJAX call
+                    if (direction === "down")
+                        addItems(10);
+                },
+                offset: 'bottom-in-view'
+            });
+        }
+
+        $(document).on("hidden.bs.modal", function (e) {
+            $(e.target).removeData("bs.modal").find(".modal-content").empty();
+        });
+
+        //$('a.modalLink').click(function(e) {
+        //    e.preventDefault();
+        //    $('#myAssetModal')
+        //         .removeData()
+        //         .html('loading....')
+        //         .load($(this).attr('href'))
+        //         .modal({show:true,backdrop:'static'});
+        //});
+
+
+        //var sticky = new Waypoint.Sticky({  commented out for now
+        //    element: $('#sub_nav')[0]
+        //});
+
+        function addItems(numItems) {
+            var action = '@Url.RouteUrl("PortalRoute", new {action = "GetAssets", controller = "List"})';
+
+            myViewModel.model.PageNumber(myViewModel.model.PageNumber() + 1);
+
+            return $.ajax({
+                url: action,
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "search": myViewModel.model.SearchText(),
+                    "page": myViewModel.model.PageNumber(),
+                    "itemsPerPage": numItems,
+                    "category": myViewModel.model.CategoryUri(),
+                    "location": myViewModel.model.LocationUri()
+                },
+                contentType: "application/json charset=utf-8",
+                success: function(data) {
+                    var items = ko.mapping.fromJSON(data);
+                    var count = items().length;
+                    if (count > 0) {
+                        if (count == numItems)
+                            $('#loading-div').show();
+                        else
+                            $('#loading-div').hide();
+                        for (var i = 0; i < count; i++) {
+                            myViewModel.model.Assets.push(items()[i]);
+                        }
+                    } else {
+                        $('#loading-div').hide();
+                    }
+                },
+                error: function(jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function() {
+                    // We have to let the plugin know that the element moved further down after elements have loaded in
+                    Waypoint.refreshAll();
+                }
+            });
+        }
+
+        function addToServerCart(hitNumber) {
+            var action = '@Url.RouteUrl("PortalRoute", new {action = "Add", controller = "Request"})';
+            var jsonData = JSON.stringify({ "id": hitNumber });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function(data) {
+                    if (data.Success) {
+                        window.top.location = '/@Model.SiteSettings.PortalTag' + '/request?ref=' + window.location.pathname;
+                    } else {
+                        displayErrors(form, data.Errors);
+                    }
+                },
+                error: function(jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function() {
+                }
+            });
+        }
+
+        function displayErrors(form, errors) {
+            var container = form.find("[data-valmsg-summary=true]"),
+                list = container.find("ul");
+
+            if (list && errors.length) {
+                container.addClass("validation-summary-errors")
+                    .removeClass("validation-summary-valid");
+
+                list.empty();
+                $.each(errors, function(index, value) {
+                    list.append('<li>' + value + '</li>');
+                });
+
+                if (window.onValidatorSummaryShown) {
+                    window.onValidatorSummaryShown.call(container);
+                }
+            }
+        }
+
+
+        function fnListExcel(){
+
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "ListExcel", controller = "List" })' ;
+
+            var cLocation=window.location.toString();
+
+            if (cLocation.toLowerCase().indexOf("?") > -1) {
+                var cParamArray=cLocation.split("?");
+
+                if(cParamArray.length>1){
+                    action+="?"+cParamArray[1];
+                }
+            }
+
+
+            window.location=action;
+        }
+
+        // Function to add SearchCriteria to WishList
+        function fnAddSerachCriteriaToWishList(searchCriteria){ 
+            var action = '@Url.RouteUrl("PortalRoute", new {action = "Create", controller = "WishList" })';
+            var jsonData = JSON.stringify({"searchCriteria" : searchCriteria });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(jqXhr, textStatus, errorThrown) {
+                    alert("Some error occur. Please try again later.");
+                },
+                complete: function() {
+                }
+            });
+
+        }
+
+
+    </script>
+}

@@ -1,0 +1,62 @@
+﻿@model HGP.Web.Models.PageModel
+<header role="banner" id="header">
+    <div class="top-block">
+        <div class="top-holder">
+            &nbsp;
+            @if (Request.IsAuthenticated)
+            {
+                <div id="cart-group" class="btn-header transparent pull-right">
+                    <a href="@Url.RouteUrl("PortalRoute", new { action = "logoff", controller = "account", portalTag = Model.SiteSettings.PortalTag,  })" class="header padding-10" data-action="userLogout">
+                        <i class="fa fa-2c fa-sign-out"></i>
+                        <strong class="fa-2b">Logout</strong>
+                    </a>
+                </div>
+                if (Model.HeaderModel.Request != null)
+                {
+                    <div id="cart-group" class="btn-header transparent pull-right">
+                        <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "request"})" id="cart" class="header padding-10">
+                            <i class="fa fa-2c fa-shopping-cart padding-right-5"></i>
+                            <b class="badge"> <span data-bind="text: headerModel.Request.AssetCount()">0</span> </b>
+                        </a>
+                        <span style="font-size: 1.5em;">|</span>
+                    </div>
+                }
+                if (Model.SiteSettings.Features.Contains("wishlist"))
+                {
+                    <div id="cart-group" class="btn-header transparent pull-right">
+                        <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "wishlist"})" id="cart" class="header padding-10">
+                            <i class="fa fa-2c fa-heart padding-right-5"></i><strong class="fa-2b">Wish List</strong>
+                        </a>
+                        <span style="font-size: 1.5em;">|</span>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+    <div class="header-holder">
+        <div class="header-overlay" style="background-image: url('https://www.hgpauction.com/wp-content/themes/salient/img/leadspace-slide-1-background.png');">
+            <div class="header-area">
+                <a href="/@Model.SiteSettings.PortalTag" class="logo"><img src="~/content/img/logo-large.png" alt="CARE" height="40" style="height: 40px" /></a>
+                @{ Html.RenderPartial("_PortalHeaderNavigation"); }
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<script>
+    var myHeaderViewModel;
+
+    $(document).ready(function() {
+        var initialHeaderData = @Html.Raw(Model.HeaderModel.JsonData);
+
+        var headerViewModel = function() {
+            var self = this;
+            self.headerModel = ko.mapping.fromJS(initialHeaderData);
+        };
+
+        myHeaderViewModel = new headerViewModel();
+        ko.applyBindings(myHeaderViewModel, $("#header").get(0));
+    });
+</script>

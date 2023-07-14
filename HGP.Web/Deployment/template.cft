@@ -1,0 +1,221 @@
+﻿{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "This will create a Load Balancer and Auto Scaling Group and deploy your application to it. **WARNING** This template creates one or more Amazon EC2 instances. You will be billed for the AWS resources used if you create a stack from this template.",
+
+  "Parameters" : {
+    "InstanceType" : {
+      "Type" : "String", 
+      "Default" : "t1.micro", 
+      "Description" : "EC2 instance type."
+    },
+    "KeyPair" : {
+      "Type" : "String", 
+      "Description" : "EC2 Key Pair."
+    },
+    "SecurityGroup" : {
+      "Type" : "String",
+      "Description" : "EC2 Security Group"
+    },
+    "BucketName" : {
+      "Type" : "String",
+      "Description" : "[Hidden]S3 Bucket for deployment."
+    },
+    "ConfigFile" : {
+      "Type" : "String",
+      "Description" : "[Hidden]Deployment Configuration File."
+    },
+
+
+    "AmazonMachineImage" : {
+      "Type" : "String",
+      "Default" : "ami-32d6f477",
+      "Description" : "AMI to launch."
+    },
+    "UserData" : {
+      "Type" : "String",
+      "Description" : "[Hidden]Base64-Encoded user data."
+    },
+
+	"AppDeploymentTimeout" : {
+      "Type" : "String",
+      "Default" : "900",
+      "Description" : "The time, in seconds, for the stack to wait for the first successful application deployment once the Auto Scaling group is created."
+    },
+		
+	"MinSize" : {
+		"Type" : "String",
+		"Default" : "1",
+		"Description" : "The minimum size of the Auto Scaling group."
+	},
+	
+	"MaxSize" : {
+		"Type" : "String",
+		"Default" : "4",
+		"Description" : "The maximum size of the Auto Scaling group."
+	},
+	
+	"Cooldown" : {
+		"Type" : "String",
+		"Default" : "300",
+		"Description" : "The amount of time, in seconds, after a scaling activity completes before any further trigger-related scaling activities can start."
+	},
+	
+	"HealthyThreshold" : {
+		"Type" : "String",
+		"Default" : "3",
+		"Description" : "Specifies the number of consecutive health probe successes required before moving the instance to the Healthy state."
+	},
+	
+	"UnhealthyThreshold" : {
+		"Type" : "String",
+		"Default" : "5",
+		"Description" : "Specifies the number of consecutive health probe failures required before moving the instance to the Unhealthy state."
+	},
+	
+	"Interval" : {
+		"Type" : "String",
+		"Default" : "30",
+		"Description" : "Specifies the approximate interval, in seconds, between health checks of an individual instance."
+	},
+	
+	"HealthCheckTimeout" : {
+		"Type" : "String",
+		"Default" : "5",
+		"Description" : "Specifies the amount of time, in seconds, during which no response means a failed health probe."
+	},
+
+	"MetricName" : {
+		"Type" : "String",
+		"Default" : "NetworkOut",
+		"Description" : "The CloudWatch measure used to determine when to trigger a scaling activity; for example, CPU, network I/O, or disk I/O."
+	},
+
+	"Statistic" : {
+		"Type" : "String",
+		"Default" : "Average",
+		"Description" : "The CloudWatch statistic used for a given measure to determine when to trigger a scaling activity; for example Average, or Sum."
+	},
+
+	"Period" : {
+		"Type" : "String",
+		"Default" : "300",
+		"Description" : "The period, in seconds, of the measure statistic over which a break is determined."
+	},
+
+	"UpperBreachScaleIncrement" : {
+		"Type" : "String",
+		"Default" : "1",
+		"Description" : "The incremental number of EC2 instances to add (positive integer)/remove (negative integer) when performing scaling activities when the upper threshold has been breached."
+	},
+
+	"LowerBreachScaleIncrement" : {
+		"Type" : "String",
+		"Default" : "-1",
+		"Description" : "The incremental number of EC2 instances to add (positive integer)/remove (negative integer) when performing scaling activities when the lower threshold has been breached."
+	},
+
+	"BreachDuration" : {
+		"Type" : "String",
+		"Default" : "300",
+		"Description" : "The amount of time, in seconds, to wait while the trigger is firing before performing scaling activities in response to the breach."
+	},
+
+	"UpperThreshold" : {
+		"Type" : "String",
+		"Default" : "6000000",
+		"Description" : "The upper limit of the metric used.  A scaling activity occurs if all data points in the last BreachDuration exceed the upper threshold."
+	},
+
+	"LowerThreshold" : {
+		"Type" : "String",
+		"Default" : "2000000",
+		"Description" : "The lower limit of the metric used.  A scaling activity occurs if all data points in the last BreachDuration fall below the lower threshold."
+	}
+},
+
+  "Resources" : {
+  
+	"DeployedApplicationWaitHandle" : {
+		"Type" : "AWS::CloudFormation::WaitConditionHandle",		
+		"Properties" : {
+		}
+	},
+	
+	"DeployedApplicationWaitCondition" : {
+		"Type" : "AWS::CloudFormation::WaitCondition",
+		"DependsOn" : "WebServerGroup",
+		"Properties" : {
+			"Handle" : { "Ref" : "DeployedApplicationWaitHandle" },
+			"Timeout" : { "Ref" : "AppDeploymentTimeout" }
+		}
+	},
+
+	
+    "WebServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
+        "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+        "MinSize" : { "Ref" : "MinSize" },
+        "MaxSize" : { "Ref" : "MaxSize" },
+		"Cooldown" : { "Ref" : "Cooldown" },
+        "LoadBalancerNames" : [ { "Ref" : "ElasticLoadBalancer" } ]
+      }
+    },
+
+    "LaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+        "KeyName" : { "Ref" : "KeyPair" },
+        "ImageId" : { "Ref" : "AmazonMachineImage" },
+        "UserData" : { "Fn::Base64" : {"Fn::Join" : [ "", ["[", { "Ref" : "UserData" }, "]", "[", { "Ref" : "DeployedApplicationWaitHandle" }, "]"] ]}},
+        "SecurityGroups" : [{ "Ref" : "SecurityGroup" }],
+        "InstanceType" : { "Ref" : "InstanceType" }
+      }
+    },
+
+	
+	
+    "ElasticLoadBalancer" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : "" },
+        "Listeners" : [ {
+          "LoadBalancerPort" : "80",
+          "InstancePort" : "80",
+          "Protocol" : "HTTP"
+        } ],
+
+        "HealthCheck" : {
+          "Target" :  "HTTP:80/",
+          "HealthyThreshold" : { "Ref" : "HealthyThreshold" },
+          "UnhealthyThreshold" : { "Ref" : "UnhealthyThreshold" },
+          "Interval" : { "Ref" : "Interval" },
+          "Timeout" : { "Ref" : "HealthCheckTimeout" }
+        }
+      }
+    }
+  },
+
+  "Outputs" : {
+    "URL" : {
+      "Description": "URL of the deployed application",
+      "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ]}]]}
+    },
+    "Bucket" : {
+	  "Description" : "The S3 Bucket where the Web Deploy archive and configuration file are uploaded",
+      "Value" : { "Ref" : "BucketName" }
+    },
+    "ConfigFile" : {
+	  "Description" : "The deployment configuration for the application",
+      "Value" : { "Ref" : "ConfigFile" }
+    },
+    "VSToolkitDeployed" : {
+	  "Description" : "A flag indicating that the stack was created via VSToolkit Deploy wizard",
+      "Value" : "True"
+    }	
+  }
+
+}
+

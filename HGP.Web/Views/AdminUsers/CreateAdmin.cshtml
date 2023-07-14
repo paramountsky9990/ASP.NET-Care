@@ -1,0 +1,86 @@
+﻿@model HGP.Web.Models.Admin.AdminUserCreateModel
+
+@{
+    ViewBag.Title = "Create User";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div id="content">
+
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-6">
+
+            <div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-editbutton="false">
+                <div class="widget-body no-padding">
+
+                    @using (Html.BeginRouteForm("AdminPortalRoute", new { controller = "AdminUsers", portalTag = Model.SiteSettings.PortalTag, action = "CreateAdmin" },
+                        FormMethod.Post, new { id = "locations-createform", @class = "smart-form", role = "form", novalidate = "novalidate" }))
+                    {
+                        <header class="form-group">
+                            <h2 class="slider-post-title">Create admin user</h2>
+                        </header>
+
+                        <div class="form-group">
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                        </div>
+
+                        <fieldset>
+                            <div class="row">
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                        <i class="icon-prepend fa fa-user"></i>
+                                        @Html.TextBoxFor(m => m.FirstName, new { @placeholder = "First name" })
+                                    </label>
+                                </section>
+                                <section class="col col-6">
+                                    <label class="input">
+                                        <i class="icon-prepend fa fa-user"></i>
+                                        @Html.TextBoxFor(m => m.LastName, new { @placeholder = "Last name" })
+                                    </label>
+                                </section>
+                            </div>
+
+                            <div class="row">
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                        <i class="icon-prepend fa fa-envelope-o"></i>
+                                        @Html.TextBoxFor(m => m.Email, new { @placeholder = "Email" })
+                                    </label>
+                                </section>
+                                <section class="col col-6 form-group">
+                                    <label class="input">
+                                        <i class="icon-prepend fa fa-phone"></i>
+                                        @Html.TextBoxFor(m => m.PhoneNumber, new { @placeholder = "Phone", @data_mask = "(999) 999-9999? x99999" })
+                                    </label>
+                                </section>
+                            </div>
+                            <div class="row">
+                                <section class="col col-6 form-group">
+                                    <label class="checkbox">
+                                        @Html.CheckBoxFor(m => m.SendWelcomeMessage, new { @placeholder = "Send welcome message" })
+                                        <i></i>Send welcome message
+                                    </label>
+
+                                </section>
+                            </div>
+                        </fieldset>
+
+
+                        <footer>
+                            <button type="submit" class="btn btn-primary">
+                                Save
+                            </button>
+                        </footer>
+
+                    }
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+@section Scripts {
+
+
+}
+

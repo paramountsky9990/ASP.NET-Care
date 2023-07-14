@@ -1,0 +1,31 @@
+﻿@model HGP.Web.Models.PageModel
+<div class="tools">
+    <span class="tools-top"></span>
+    <div class="frame">
+        @if (Model.SiteSettings.Logo != null)
+        {
+            <img class="tool-logo" src="https://s3-us-west-1.amazonaws.com/hgpmedia/@Model.SiteSettings.PortalTag/@Model.SiteSettings.Logo.FileName" alt="@Model.SiteSettings.CompanyName" />
+        }
+
+        <h1 class="title">@ViewBag.PageTitle</h1>
+
+        @if (Request.IsAuthenticated)
+        {
+            using (Html.BeginRouteForm("ListRoute", new {controller = "List", Action = "Search"}, FormMethod.Get, new {@class = "search-form", role = "form"}))
+            {
+                <fieldset>
+                    <label for="s">Search this website</label>
+                    <span class="text">
+                        @Html.TextBoxFor(x => x.HeaderModel.SearchText, new {Name = "search", placeholder = "Search"})
+                        <input type="submit" value="search" class="searchsubmit" />
+                    </span>
+                </fieldset>
+            }
+        }
+        <p class="breadcrumb"><a href="/@Model.SiteSettings.PortalTag">@Model.SiteSettings.PortalTag</a> <span class='current_crumb'> @ViewContext.RouteData.Values["controller"] </span> </p>
+    </div><!-- END frame -->
+
+    <span class="tools-bottom"></span>
+</div>
+
+

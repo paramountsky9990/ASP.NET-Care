@@ -1,0 +1,84 @@
+﻿@model HGP.Web.Models.RegisterViewModel
+@{
+    Layout = "~/Views/Shared/_PortalGuestLayout.cshtml";
+    ViewBag.Title = "Portal Registration";
+}
+<ul class="slides">
+    <li class="jqslider karma-slider-normal-image">
+        <div class="slider-content-main">
+            <section id="loginForm">
+                @using (Html.BeginRouteForm("PortalRoute", new { controller = "Account", action = "Register" }, FormMethod.Post, new { @class = "smart-form contact-form form-horizontal", 
+                                                                                                                                        role = "form", novalidate = "novalidate" }))
+                {
+                    <div class="form-group">
+                        <h2 class="slider-post-title">@Html.Raw(Model.RegistrationMessage ?? ViewBag.Title)</h2>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        @Html.ValidationSummary()
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            @Html.LabelFor(m => m.FirstName, new { @class = "name" })
+                            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First name" })
+                            @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            @Html.LabelFor(m => m.LastName, new { @class = "name" })
+                            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @placeholder = "Last name" })
+                            @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            @Html.LabelFor(m => m.Email, new { @class = "name" })
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email address" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            @Html.LabelFor(m => m.Phone, new { @class = "name" })
+                            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @placeholder = "Phone" })
+                            @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            @Html.LabelFor(m => m.Password, new { @class = "name" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "name" })
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm password" })
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="Register" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p>
+                            @Html.RouteLink("Existing user?", "PortalRoute", new { controller = "Account", action = "Login" }, new { id = "loginLink" })
+                        </p>
+                    </div>
+                }
+            </section>
+        </div>
+        <!-- END slider-content-main -->
+        <div class="slider-content-sub guest-login-img icon-align-center">
+            <div class="horizontal login-box">
+                <div class="vertical">
+                    <img class="login-logo" src="http://metrosafetyandfire.com/wp-content/uploads/2013/11/home-slider_client-login_436x270.jpg" alt="" />
+                </div>
+            </div>
+        </div><!-- END slider-content-sub -->
+    </li>
+</ul>

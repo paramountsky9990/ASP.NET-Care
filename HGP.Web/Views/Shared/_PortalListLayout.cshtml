@@ -1,0 +1,83 @@
+﻿
+@model HGP.Web.Models.List.ListHomeModel
+@{
+    var mainClass = (string)@ViewBag.MainClass;
+}
+<!DOCTYPE html>
+<!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if IE 9 ]><html class="ie ie9" lang="en"><![endif]-->
+<!--[if !IE]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-165702908-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-165702908-1');
+    </script>
+
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta charset="UTF-8">
+    <title>HGP - C.A.R.E</title>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans|Lato' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="~/content/img/favicon/favicon.ico"/>
+
+    <!-- Primary CSS -->
+    <link rel="stylesheet" href="~/content/css/bootstrap.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="~/content/portal/css/_font-awesome.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="~/content/portal/css/_style.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="~/content/portal/css/_mobile.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="~/content/portal/css/_notification.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="~/content/portal/css/_custom.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="~/content/portal/css/cropimg.css" type="text/css" media="all"/>
+    <!-- Color Scheme CSS -->
+    <link rel="stylesheet" href="~/content/portal/css/karma-royal-blue.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="~/content/portal/css/secondary-royal-blue.css" type="text/css" media="all"/>
+
+    @if (!string.IsNullOrEmpty(Model.SiteSettings.CustomCss))
+    {
+        <text>
+            <style>
+                @Html.Raw(Model.SiteSettings.CustomCss)
+                </style>
+        </text>
+    }
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script> if (!window.jQuery) {
+            document.write('<script src="/scripts/libs/jquery-2.1.1.min.js"><\/script>');
+        }
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script> if (!window.jQuery.ui) {
+            document.write('<script src="/scripts/libs/jquery-ui-1.10.3.min.js"><\/script>');
+        }
+    </script>
+
+    @{ Html.RenderPartial("_PortalHeadForIE"); }
+</head>
+<body>
+    <div id="tt-wide-layout" class="content-style-default">
+        <div id="wrapper">
+            @{ Html.RenderPartial("_PortalHeader"); }
+            <div id="main">
+                <div class="main-area">
+                    @{ Html.RenderPartial("_PortalTools"); }
+                    @{ Html.RenderPartialIf("_PortalListNavigation", @Model.Categories.Any()); }
+                    <main role="main" id="content" class="@ViewBag.MainClass portfolio_layout">
+                        @RenderBody()
+                    </main><!-- END main #content -->
+                </div><!-- END main-area -->
+                <div id="footer-top">&nbsp;</div>
+            </div>
+        </div><!-- END wrapper -->
+    </div><!-- END tt-layout -->
+    @{ Html.RenderPartial("_PortalScripts", RenderSection("scripts", false)); }
+</body>
+</html>

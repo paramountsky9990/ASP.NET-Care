@@ -1,0 +1,187 @@
+﻿@model HGP.Web.Models.Drafts.DraftsIndexModel
+@{
+    ViewBag.Title = "Drafts";
+    ViewBag.MainClass = "content_full_width";
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+}
+
+
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-md-8 col-md-offset-2">
+            <div class="jarviswidget well">
+                <header>
+                    <h2><strong>Draft Assets</strong></h2>
+                </header>
+                <div role="content" class="">
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+                        <div id="inbox-content" class="inbox-body ">
+                            <div class="padding-left-10 padding-10">
+                                <div class="col-md-12 padding-10">
+
+                                    <p style="vertical-align: text-bottom;">
+                                        <span style="font-size: 2em; padding-right: 200px;">
+                                            @if (!Model.DraftAssets.Any())
+                                            {
+                                                @:No draft assets found...
+                                            }
+                                            else
+                                            {
+                                                @:Your Drafts
+                                            }
+                                        </span>
+                                        <a href="@Url.RouteUrl("PortalRoute", new {action = "CreateNewDraft", controller = "Drafts"})" class="btn btn-success"><i class="fa fa-plus"></i> Get Started</a>
+                                    </p>
+
+                                    <div class="row padding-10">
+                                        <div class="col-md-12">
+                                            <style>
+                                                .table-spacing {
+                                                    border-spacing: 15px;
+                                                }
+
+                                                table {
+                                                    display: inline-block;
+                                                    border: 0px solid black;
+                                                    padding: 10px;
+                                                    border-spacing: 20px !important;
+                                                }
+
+                                                td {
+                                                    border: 0px;
+                                                    padding: 10px;
+                                                    vertical-align: top;
+                                                }
+
+                                                    td div {
+                                                        padding-bottom: 5px;
+                                                    }
+
+                                                tr {
+                                                    border: 0px solid black;
+                                                }
+                                            </style>
+                                            <table class="table-spacing">
+                                                @foreach (var draftItem in Model.DraftAssets)
+                                                {
+
+                                                    <tr>
+                                                        <td>
+                                                            @if (draftItem.Media.Any())
+                                                            {
+                                                                <img height="64" width="64" src="@MyHelpers.DraftImageUrl(Html, Model.SiteSettings.PortalTag, Model.CurrentUserId,  draftItem.Media.FirstOrDefault(), "t")" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <img height="64" width="64" src="~/Content/img/image-missing-icon.png" />
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <div><strong>@draftItem.Title</strong></div>
+
+                                                            <div>
+                                                                Status: <strong>
+                                                                    @switch (draftItem.DraftStatus)
+                                                                    {
+                                                                        case GlobalConstants.DraftAssetStatusTypes.Approved:
+                                                                            @:Approved
+                                                                            break;
+                                                                        case GlobalConstants.DraftAssetStatusTypes.OpenForEditing:
+                                                                            @:Not yet submitted for approval
+                                                                            break;
+                                                                        case GlobalConstants.DraftAssetStatusTypes.SentBackForEdits:
+                                                                            @:Changes required - @draftItem.Notes
+                                                                            break;
+                                                                        case GlobalConstants.DraftAssetStatusTypes.SubmittedForApproval:
+                                                                            @:Submitted for approval
+                                                                            break;
+                                                                    }
+                                                                </strong> Hit #: <strong>@draftItem.HitNumber</strong>
+                                                            </div>
+                                                            <div>
+                                                                @if (draftItem.DraftStatus == GlobalConstants.DraftAssetStatusTypes.OpenForEditing || draftItem.DraftStatus == GlobalConstants.DraftAssetStatusTypes.SentBackForEdits)
+                                                                {
+                                                                    <text><a href="@Url.RouteUrl("PortalRoute", new {action = "create", controller = "Drafts", draftId = draftItem.HitNumber})">Resume Draft</a> &nbsp; | &nbsp;</text>
+                                                                    <text><a href="@Url.RouteUrl("PortalRoute", new {action = "Process", controller = "Drafts", draftHitNumber = draftItem.HitNumber})">Submit for Approval</a></text>
+                                                                }
+                                                                @if (draftItem.DraftStatus == GlobalConstants.DraftAssetStatusTypes.OpenForEditing || draftItem.DraftStatus == GlobalConstants.DraftAssetStatusTypes.SentBackForEdits)
+                                                                {
+                                                                    <text>
+                                                                        &nbsp; | &nbsp;
+                                                                        <a class="margin-left-10 btn btn-sm btn-default" onclick="removeDraft('@draftItem.HitNumber');">
+                                                                            <i class="fa fa-trash" style="font-size: 140%"></i>
+                                                                        </a>
+                                                                    </text>
+                                                                }
+
+
+                                                            </div>
+
+                                                        </td>
+                                                    </tr>
+
+                                                }
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end widget content -->
+                </div>
+            </div>
+            <!-- end widget -->
+        </article>
+    </div>
+</section>
+<!-- end widget grid -->
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $('#submitButton').click(function () {
+            var desc = $("#descriptionEdit").code();
+            $('#Description').val(desc);
+            $("#editForm").submit();
+        });
+
+        $('#cancelEdit').click(function () {
+            window.top.location = '@Url.RouteUrl("PortalRoute", new { controller = "AdminAssets", action = "Index" })';
+        });
+
+        $('#getStartedButton').click(function () {
+            window.top.location = '@Url.RouteUrl("PortalRoute", new { controller = "AdminAssets", action = "Index" })';
+        });
+
+        function removeDraft(hitNumber) {
+            var action = '@Url.RouteUrl("PortalRoute", new {portaltag = Model.SiteSettings.PortalTag, action = "Remove", controller = "Drafts"})';
+            var jsonData = JSON.stringify({ "hitNumber": hitNumber });
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        location.reload();
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+    </script>
+
+
+
+}
+

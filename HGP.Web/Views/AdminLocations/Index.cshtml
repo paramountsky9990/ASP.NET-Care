@@ -1,0 +1,292 @@
+﻿@model HGP.Web.Models.Admin.AdminLocationsHomeModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row margin-bottom-10">
+    <div class="col-sm-4">
+        <div class="input-group">
+            <div class="input-group-btn ">
+                @using (Html.BeginRouteForm("AdminPortalRoute", new { controller = "AdminLocations", Action = "Create", id = @Model.PortalTag }, FormMethod.Get, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <button id="addLocationBtn" class="btn btn-success">
+                        <i class="fa fa-plus"></i> <span class="hidden-mobile">Add New Location</span>
+                    </button>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+
+    <!-- Widget ID (each widget will need unique ID)-->
+    <div class="jarviswidget jarviswidget-color-greenLight" id="wid-id-0" data-widget-colorbutton="false"
+         data-widget-editbutton="false"
+         data-widget-togglebutton="false"
+         data-widget-deletebutton="false">
+        <!-- widget options:
+            usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+            data-widget-colorbutton="false"
+            data-widget-editbutton="false"
+            data-widget-togglebutton="false"
+            data-widget-deletebutton="false"
+            data-widget-fullscreenbutton="false"
+            data-widget-custombutton="false"
+            data-widget-collapsed="true"
+            data-widget-sortable="false"
+
+        -->
+        <header>
+            <h2><strong>All Locations</strong></h2>
+        </header>
+
+
+        <!-- widget div-->
+        <div>
+
+            <!-- widget edit box -->
+            <div class="jarviswidget-editbox">
+                <!-- This area used as dropdown edit box -->
+                <input class="form-control" type="text">
+                <span class="note"><i class="fa fa-check text-success"></i> Change title to update and save instantly!</span>
+
+            </div>
+
+            <!-- widget content -->
+            <div class="widget-body no-padding">
+
+                <div class="custom-scroll table-responsive">
+
+                    <table id="locations-grid" class="table table-striped table-bordered table-hover" width="100%">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Id
+                                </th>
+                                <th>
+                                    Actions
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Address
+                                </th>
+                                <th>
+                                    Owner
+                                </th>
+                                <th>
+                                    Visible Assets
+                                </th>
+                                <th>
+                                    Hidden Assets
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody data-bind="template: { name: 'locations-tmpl', foreach: myViewModel.model.Locations }"></tbody>
+                    </table>
+
+
+                </div>
+
+
+
+            </div>
+            <!-- end widget content -->
+
+        </div>
+        <!-- end widget div -->
+
+    </div>
+    <!-- end widget -->
+
+</section>
+<!-- end widget grid -->
+
+
+<script id="locations-tmpl" type="text/html">
+    <tr>
+        <td>
+            <span data-bind="text: $index" />
+        </td>
+        <td>
+        </td>
+        <td>
+            <span data-bind="text: Name" />
+        </td>
+        <td>
+            <span data-bind="text: Address.Street1" />
+        </td>
+        <td>
+            <span data-bind="text: OwnerName" /> <span data-bind="if: OwnerEmail() != null">(<a data-bind="text: OwnerEmail,  attr: { href : 'mailto:' + OwnerEmail() }" />)</span>
+        </td>
+        <td>
+            <span data-bind="text: VisibleAssetCount" />
+        </td>
+        <td>
+            <span data-bind="text: HiddenAssetCount" />
+        </td>
+    </tr>
+
+</script>
+
+
+
+
+@section Scripts
+    {
+    @Scripts.Render("~/bundles/datatables")
+
+    <script type="text/javascript">
+            var initialData = @Html.Raw(Model.JsonData);
+            var locationsUrl = '@Html.RouteLink("Locations", "AdminPortalRoute", new { controller = "adminlocations", action = "index" }, new { id = "registerLink" })';
+            var editUrl = '@Url.RouteUrl("AdminPortalRoute", new {action = "edit", controller = "adminlocations"})';
+
+            var viewModel = function() {
+                var self = this;
+                self.model = ko.mapping.fromJS(initialData);
+            };
+
+            var myViewModel = new viewModel();
+            ko.applyBindings(myViewModel, $("#locations-grid").get(0));
+
+            var viewLocation = '/' + encodeURIComponent(myViewModel.model.PortalTag()) + '/list?location=';
+
+            $('#locations-grid').DataTable({
+                "columnDefs": [
+                    {
+                        // The `data` parameter refers to the data for the cell (defined by the
+                        // `data` option, which defaults to the column being worked with, in
+                        // this case `data: 0`.
+                        "render": function(data, type, row) {
+                            var tag = $(row[2]).html();
+                            var assets = $(row[5]).html();
+                            var deleteButton = '<button  title="Remove location" class="btn btn-xs btn-default" data-action="removeLocation" data-name="' + tag + '" data-count="' + assets + '" data-portal="' + myViewModel.model.PortalTag() + '"><i class="fa fa-trash"></i></button>';
+                            var editButton = '<a title="Edit location" class="btn btn-xs btn-default" href="' + editUrl + '/' + encodeURIComponent(myViewModel.model.PortalTag()) + '/' + encodeURIComponent(tag) + '"><i class="fa fa-pencil"></i></a>';
+
+                            return editButton + deleteButton;
+                        },
+                        "targets": 1
+                    },
+                    { "visible": false, "targets": [0] }
+                ]
+
+            });
+
+            function deleteLocationold(portalTag, locationName) {
+                var action = '@Url.Action("Delete", "AdminLocations")';
+                var jsonData = JSON.stringify({ "portalTag": portalTag, "locationName": locationName });
+
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json charset=utf-8",
+                    data: jsonData,
+                    processData: false,
+                    success: function(data) {
+                        if (data.success) {
+                            var returnUrl = getParameterByName('ReturnUrl');
+                            if ((returnUrl) && (returnUrl.length > 0))
+                                location.href = returnUrl;
+                            else
+                                location.reload();
+                        } else {
+                            displayErrors(form, data.Errors);
+                        }
+                    },
+                    error: function(jqXhr, textStatus, errorThrown) {
+                        alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                    },
+                    complete: function() {
+                    }
+                });
+            }
+
+        $.root_.on('click', '[data-action="removeLocation"]', function(e) {
+            var $this = $(this);
+            deleteLocation($this);
+            e.preventDefault();
+				
+            //clear memory reference
+            $this = null;			
+        }); 
+
+        function deleteLocation($this) {
+            var action = '@Url.Action("Delete", "AdminLocations")';
+            var locationName = $this.data('name');
+            var assetCount = $this.data('count');
+            var portalTag = $this.data('portal');
+
+            $.SmartMessageBox({
+                title : "<i class='fa fa-sign-out txt-color-orangeDark'></i> Remove <span class='txt-color-orangeDark'><strong>" + locationName + "</strong></span> ?",
+                content : 'Are you sure you want to remove this location? This will permanently remove all assets associated with this location. Assets with requests will be preserved. Assets that will be removed: ' + assetCount,
+                buttons : '[No][Yes]'
+			
+            }, function(ButtonPressed) {
+                if (ButtonPressed == "Yes") {
+                    removeLocation(portalTag, locationName);
+                }
+            });
+
+            function removeLocation(portalTag, locationName) {
+                var jsonData = JSON.stringify({ "portalTag": portalTag, "locationName": locationName });
+ 
+                $.ajax({
+                    url: action,
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json charset=utf-8",
+                    data: jsonData,
+                    processData: false,
+                    success: function(data) {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            displayErrors(form, data.Errors);
+                        }
+                    },
+                    error: function(jqXhr, textStatus, errorThrown) {
+                        alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                    },
+                    complete: function() {
+                    }
+                });
+            }
+        
+        
+
+        }
+        
+        function displayErrors(form, errors) {
+        var container = form.find("[data-valmsg-summary=true]"),
+            list = container.find("ul");
+
+        if (list && errors.length) {
+            container.addClass("validation-summary-errors")
+                .removeClass("validation-summary-valid");
+
+            list.empty();
+            $.each(errors, function (index, value) {
+                list.append('<li>' + value + '</li>');
+            });
+
+            if (window.onValidatorSummaryShown) {
+                window.onValidatorSummaryShown.call(container);
+            }
+        }
+    }
+
+    function viewSite(tag) {
+        window.top.location = '/' + tag;
+    }
+    </script>
+}

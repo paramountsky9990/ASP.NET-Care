@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if IE 9 ]><html class="ie ie9" lang="en"><![endif]-->
+<!--[if !IE]><!-->
+<html lang="en-US">
+<!--<![endif]-->
+<head>
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <title>HGP - C.A.R.E</title>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans|Lato' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="~/content/img/favicon/favicon.ico" />
+
+    <!-- Primary CSS -->
+    <link rel="stylesheet" href="~/content/css/bootstrap.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="~/content/portal/css/_style.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="~/content/portal/css/_custom.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="~/content/portal/css/_mobile.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="~/content/portal/css/cropimg.css" type="text/css" media="all" />
+    <!-- Color Scheme CSS -->
+    <link rel="stylesheet" href="~/content/portal/css/karma-royal-blue.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="~/content/portal/css/secondary-royal-blue.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="~/content/portal/css/_font-awesome.css" type="text/css" media="all" />
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script>if (!window.jQuery) { document.write('<script src="/scripts/libs/jquery-2.1.1.min.js"><\/script>'); }</script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script>if (!window.jQuery.ui) { document.write('<script src="/scripts/libs/jquery-ui-1.10.3.min.js"><\/script>'); }</script>
+
+    @{ Html.RenderPartial("_PortalHeadForIE"); }
+</head>
+<body class="guest">
+    <div id="tt-wide-layout" class="content-style-default">
+        <div id="wrapper">
+            <header role="banner" id="header">
+                <div class="top-block" style="background-color: white;">
+                    <div class="top-holder">
+                        &nbsp;
+                    </div><!-- END top-holder -->
+                </div><!-- END top-block -->
+                <div class="header-holder tt-header-holder-tall">
+                    <div class="header-overlay" style="background-color: white; height:90px; padding: 20px 0px 20px 100px;">  <a href="https://www.hgpauction.com/" class="custom-logo">
+                        <img src="~/content/img/hgplogo.png" alt="CARE" height="71" style="padding-bottom: 20px"/></a></div>
+                    <div class="header-overlay" style="background-image: url('https://www.hgpauction.com/wp-content/themes/salient/img/leadspace-slide-1-background.png');">
+                        <div class="header-area">
+                           
+                            <nav role="navigation">
+                                &nbsp;
+                            </nav>
+                            <div class="jquery2-slider-wrap flexslider">
+                                <div class="jquery2-slider-bg">
+                                    @RenderBody()
+                                </div><!-- END jquery2-slider-bg -->
+                            </div><!-- END jquery2-slider-wrap -->
+                        </div><!-- END header-area -->
+                    </div><!-- END header-overlay -->
+                </div><!-- END header-holder -->
+            </header><!-- END header -->
+            <!-- ***************** - Main Content Area - ***************** -->
+            <div id="main" class="tt-slider-karma-custom-jquery-2">
+                <div class="main-area">
+                </div><!-- END main-area -->
+            </div><!-- END main -->
+        </div><!-- END wrapper -->
+    </div><!-- END tt-layout -->
+@{ Html.RenderPartial("_PortalScripts", RenderSection("scripts", false)); }
+</body>
+</html>

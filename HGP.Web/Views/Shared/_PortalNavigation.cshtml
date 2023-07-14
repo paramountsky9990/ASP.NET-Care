@@ -1,0 +1,17 @@
+﻿@model PageModel
+@if (@Model != null && @Model.MenuItems.Any())
+{
+    <div id="category-nav">
+        <nav role="navigation" id="sub_nav">
+            <ul class="sub-menu">
+                <div style="overflow:hidden">
+                    @foreach (var item in @Model.MenuItems)
+                    {
+                        var activeClass = item.IsActive ? "current-menu-item page_item current_page_item" : string.Empty;
+                        <li class="menu-item menu-item-type-post_type menu-item-object-page @activeClass"><a href="@MyHelpers.PortalUrl(Url, item.ActionName, item.ControllerName, item.Tag)">@item.LinkText</a></li>
+                    }
+                </div>
+            </ul>
+        </nav>
+    </div>
+}

@@ -1,0 +1,70 @@
+﻿@model LoginViewModel
+@{
+    Layout = "~/Views/Shared/_PortalGuestLayout.cshtml";
+    ViewBag.Title = "Portal Sign in";
+}
+<ul class="slides">
+    <li class="jqslider karma-slider-normal-image">
+        <div class="slider-content-main">
+            <section id="loginForm">
+                @using (Html.BeginRouteForm("PortalRoute", new { controller = "Account", action = "Login" }, FormMethod.Post, new { @class = "smart-form contact-form form-horizontal", role = "form", novalidate = "novalidate" }))
+                {
+                    <div class="form-group">
+                        <h2 class="slider-post-title">@ViewBag.Title</h2>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <div class="form-group">
+                        @Html.ValidationSummary()
+                        @Html.HiddenFor(m=>m.ReturnUrl)
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label class="name" for="email">
+                                Email
+                            </label>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email address" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <label class="name" for="phone">
+                                Password
+                            </label>
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Password" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "required" }, "em")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="submit" value="Sign in to CARE" class="btn btn-primary" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p>
+                            @Html.RouteLink("Register as a new user", "PortalRoute", new { controller = "Account", action = "Register" }, new { id = "registerLink" })
+                        </p>
+                        <p>
+                            @Html.RouteLink("Forgot your password?", "PortalRoute", new { controller = "Account", action = "ForgotPassword" }, new { id = "registerLink" })
+                        </p>
+                    </div>
+                }
+            </section>
+        </div>
+        <!-- END slider-content-main -->
+        <div class="slider-content-sub guest-login-img icon-align-center">
+            <div class="horizontal login-box">
+                <div class="vertical">
+                    @if (Model.SiteSettings.Logo != null)
+                    {
+                        <img class="login-logo" src="https://s3-us-west-1.amazonaws.com/hgpmedia/@Model.SiteSettings.PortalTag/@Model.SiteSettings.Logo.FileName" alt="@Model.SiteSettings.CompanyName" />
+                    }
+                    else
+                    {
+                        <img class="login-logo" src="http://cwgconsult.com/wp-content/uploads/2012/10/photodune-202687-smiling-cute-business-woman-with-colleagues-at-the-back-xs-436x270.jpg" alt="" />
+                    }
+                </div>
+            </div>
+        </div><!-- END slider-content-sub -->
+    </li>
+</ul>

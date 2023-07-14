@@ -1,0 +1,105 @@
+﻿@using HGP.Web.Infrastructure
+
+<!-- IMPORTANT: SmartAdmin Core -->
+@Scripts.Render("~/bundles/ko")
+@Scripts.Render("~/bundles/smartadmin")
+
+<!-- SmartChat UI : plugin -->
+@Scripts.Render("~/bundles/smart-chat")
+
+<!-- DataTables : plugin -->
+@Scripts.Render("~/bundles/datatables")
+
+<!-- jQGrid : plugin -->
+@Scripts.Render("~/bundles/jq-grid2020")
+
+<!-- Forms : plugin -->
+@Scripts.Render("~/bundles/forms")
+
+<!-- Flot Chart Plugin: Flot Engine, Flot Resizer, Flot Tooltip, Morris, Sparkline, EasyPie -->
+@Scripts.Render("~/bundles/charts")
+
+<!-- Vector Maps Plugin: Vectormap engine, Vectormap language -->
+@Scripts.Render("~/bundles/vector-map")
+
+<!-- Full Calendar -->
+@Scripts.Render("~/bundles/full-calendar")
+
+<!-- DO NOT REMOVE : GLOBAL FUNCTIONS! -->
+<script>
+    $(document).ready(function () {
+        //window.localStorage.clear();
+        //window.sessionStorage.clear();
+
+        pageSetUp();
+        drawBreadCrumb();
+    });
+</script>
+
+@if (@Model is HelperResult)
+{
+    @Model
+}
+<!-- Your GOOGLE ANALYTICS CODE Below-->
+@*<script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'xx-xxxxxxxx-x']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>*@
+
+
+
+
+
+<div id="divSmallBoxes"></div>
+
+@{
+    if (TempData["messages"] != null)
+    {
+        var text = "";
+        var alertColor = "";
+        foreach (var message in (List<AlertMessage>)TempData["messages"])
+        {
+            switch (message.Severity)
+            {
+                case AlertSeverity.Error:
+                    text = "Error!";
+                    alertColor = "#C46A69";
+                    break;
+                case AlertSeverity.Message:
+                    text = "Note:";
+                    alertColor = "#3276B1";
+                    break;
+                case AlertSeverity.Success:
+                    text = "Success!";
+                    alertColor = "#739E73";
+                    break;
+                case AlertSeverity.Warning:
+                    text = "Warning!";
+                    alertColor = "#C79121";
+                    break;
+            }
+
+            <text>
+                <script>
+                    $.smallBox({
+                        title: "@text",
+                        content: "@message.Message",
+                        color: "@alertColor",
+                        timeout: 30000,
+                        iconSmall: "fa fa-bell fa-thumbs-up animated"
+                    });
+                </script>
+            </text>
+        }
+    }
+}

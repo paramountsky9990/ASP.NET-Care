@@ -1,0 +1,309 @@
+﻿@model HGP.Web.Models.Admin.AdminHomeModel
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row margin-bottom-10">
+    <div class="col-sm-4">
+        <div class="input-group">
+            <div class="input-group-btn ">
+                @using (Html.BeginRouteForm("AdminPortalRoute", new { controller="AdminSite", Action="Create" }, FormMethod.Get, new { @class = "form-horizontal", role = "form" }))
+                {
+                    <button id="addPortalBtn" class="btn btn-info">
+                        <i class="fa fa-plus"></i> <span class="hidden-mobile">Add New Portal</span>
+                    </button>
+                }
+            </div>
+
+            <div class="input-group-btn ">
+                    <button id="updateCountsBtn" class="btn btn-info">
+                        <span class="hidden-mobile">Update Counts</span>
+                    </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+        <!-- widget grid -->
+        <section id="widget-grid" class="">
+
+
+            <!-- Widget ID (each widget will need unique ID)-->
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-colorbutton="false"
+                 data-widget-editbutton="false"
+                 data-widget-togglebutton="false"
+                 data-widget-deletebutton="false">
+                <!-- widget options:
+                    usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+
+                    data-widget-colorbutton="false"
+                    data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-fullscreenbutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="true"
+                    data-widget-sortable="false"
+
+                -->
+                <header>
+                    <h2><strong>All Portals</strong></h2>
+                </header>
+
+
+                <!-- widget div-->
+                <div>
+
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                        <input class="form-control" type="text">
+                        <span class="note"><i class="fa fa-check text-success"></i> Change title to update and save instantly!</span>
+
+                    </div>
+
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+
+                        <div class="custom-scroll table-responsive">
+
+                            <table id="portals-grid" class="table table-striped table-bordered table-hover" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Id
+                                        </th>
+                                        <th>
+                                            Tag
+                                        </th>
+                                        <th>
+                                            Actions
+                                        </th>
+                                        <th>
+                                            Company
+                                        </th>
+                                        <th>
+                                            Assets
+                                        </th>
+                                        <th>
+                                            Users
+                                        </th>
+                                        <th>
+                                            Pending Transfers
+                                        </th>
+                                        <th>
+                                            Last Login
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody data-bind="template: { name: 'portals-tmpl', foreach: myViewModel.model }"></tbody>
+                            </table>
+
+
+                        </div>
+
+
+
+                    </div>
+                    <!-- end widget content -->
+
+                </div>
+                <!-- end widget div -->
+
+            </div>
+            <!-- end widget -->
+
+        </section>
+        <!-- end widget grid -->
+
+
+<script id="portals-tmpl" type="text/html">
+    <tr>
+        <td>
+            <span data-bind="text: Id" />
+        </td>
+        <td>
+            <span data-bind="text: PortalTag" />
+        </td>
+        <td>
+            <span />
+        </td>
+        <td>
+            <span data-bind="text: CompanyName()" /> - <a data-bind="attr: { href : '/' + PortalTag() } ">/<span data-bind="text: PortalTag()" /></a><br/>
+            <span class="text-muted font-sm" data-bind="ae: AccountExecutive" />
+                </td>
+                <td>
+                    <span data-bind="text: AssetCount" />
+                </td>
+                <td>
+                    <span data-bind="text: UsersCount" />
+                </td>
+                <td>
+                    <span data-bind="text: PendingTransfersCount" />
+                </td>
+                <td class="date">
+                    <span data-bind="mongodate: LastLogin, format: 'L LT'" />
+                </td>
+            </tr>
+
+        </script>
+
+    @section Scripts
+    {
+        @Scripts.Render("~/bundles/datatables")
+
+        <script type="text/javascript">
+            ko.bindingHandlers.ae = {
+                update: function(element, valueAccessor) {
+                    var ae = valueAccessor();
+                    if ((ae != null) && (ae.FirstName() != null))
+                        $(element).text('AE: ' + ae.FirstName() + ' ' + ae.LastName());
+                }
+            };
+
+            var initialData = @Html.Raw(Model.JsonData);
+            var locationsUrl = '@Url.RouteUrl("AdminPortalRoute", new {action = "index", controller = "adminlocations"})';
+            var usersUrl = '@Url.RouteUrl("AdminPortalRoute", new {action = "index", controller = "adminusers"})';
+            var editUrl = '@Url.RouteUrl("AdminPortalRoute", new {action = "edit", controller = "adminsite"})';
+
+            var viewModel = function() {
+                var self = this;
+                self.model = ko.mapping.fromJS(initialData);
+            };
+
+            var myViewModel = new viewModel();
+            ko.applyBindings(myViewModel, $("#portals-grid").get(0));
+            //ko.applyBindings(myViewModel, $(".breadcrumb .info").get(0));
+
+            $('#portals-grid').DataTable({
+                "columnDefs": [
+                    {
+                        // The `data` parameter refers to the data for the cell (defined by the
+                        // `data` option, which defaults to the column being worked with, in
+                        // this case `data: 0`.
+                        "render": function(data, type, row) {
+                            var id = $(row[0]).html();
+                            var tag = $(row[1]).html();
+                            var editButton = '<a title="Edit portal" class="btn btn-xs btn-default" href="' + editUrl + '\\' + tag + '"><i class="fa fa-pencil"></i></a>';
+                            var viewButton = '<button title="View portal" class="btn btn-xs btn-default" data-original-title="" onclick="viewSite(\'' + tag + '\');"><i class="fa fa-eye"></i></button><span> </span>';
+                            var deleteButton = '<button  title="Remove portal" class="btn btn-xs btn-default" data-action="removeSite" data-id="' + id + '" data-tag="' + tag + '"><i class="fa fa-trash"></i></button>';
+                            var locationsButton = '<a title="Locations" class="btn btn-xs btn-default" data-original-title="" href="' + locationsUrl + '\\index\\' + tag + '"><i class="fa fa-building"></i></a><span> </span>';
+                            var usersButton = '<a title="Manage Users" class="btn btn-xs btn-default" href="' + usersUrl + '\\index\\' + tag + '"><i class="fa fa-male"></i></a><span> </span>';
+
+                            return viewButton + editButton + deleteButton + locationsButton + usersButton;
+                        },
+                        "targets": 2
+                    },
+                    { "visible": false, "targets": [0, 1] }
+                ]
+
+            });
+
+
+            $.root_.on('click', '[data-action="removeSite"]', function(e) {
+                var $this = $(this);
+                deleteSite($this);
+                e.preventDefault();
+
+                //clear memory reference
+                $this = null;
+            });
+
+            function deleteSite($this) {
+                var action = '@Url.Action("Delete", "AdminSite")';
+                var siteId = $this.data('id');
+                var tag = $this.data('tag');
+                var jsonData = JSON.stringify({ "siteId": siteId });
+
+                $.SmartMessageBox({
+                    title : "<i class='fa fa-sign-out txt-color-orangeDark'></i> Remove <span class='txt-color-orangeDark'><strong>" + tag + "</strong></span> ?",
+                    content : 'Are you sure you want to remove this portal? This will permanently remove all data associated with this portal.',
+                    buttons : '[No][Yes]'
+
+                }, function(ButtonPressed) {
+                    if (ButtonPressed == "Yes") {
+                        removeSite(siteId);
+                    }
+                });
+
+                function removeSite(id) {
+                    $.ajax({
+                        url: action,
+                        type: "POST",
+                        dataType: "json",
+                        contentType: "application/json charset=utf-8",
+                        data: jsonData,
+                        processData: false,
+                        success: function(data) {
+                            if (data.success) {
+                                location.reload();
+                            } else {
+                                displayErrors(form, data.Errors);
+                            }
+                        },
+                        error: function(jqXhr, textStatus, errorThrown) {
+                            alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                        },
+                        complete: function() {
+                        }
+                    });
+                }
+            }
+
+            $('#updateCountsBtn').click(function() {              
+                updateCounts();
+            });
+
+            function updateCounts() {
+                var action = '@Url.Action("UpdateAssetCounts", "AdminSite")';
+
+                    $.ajax({
+                        url: action,
+                        type: "GET",
+                        dataType: "json",
+                        contentType: "application/json charset=utf-8",
+                        processData: false,
+                        success: function(data) {
+                            if (data.success) {
+                                location.reload();
+                            } else {
+                                displayErrors(form, data.Errors);
+                            }
+                        },
+                        error: function(jqXhr, textStatus, errorThrown) {
+                            alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                        },
+                        complete: function() {
+                        }
+                    });
+                
+            }
+
+
+            function displayErrors(form, errors) {
+                var container = form.find("[data-valmsg-summary=true]"),
+                    list = container.find("ul");
+
+                if (list && errors.length) {
+                    container.addClass("validation-summary-errors")
+                        .removeClass("validation-summary-valid");
+
+                    list.empty();
+                    $.each(errors, function(index, value) {
+                        list.append('<li>' + value + '</li>');
+                    });
+
+                    if (window.onValidatorSummaryShown) {
+                        window.onValidatorSummaryShown.call(container);
+                    }
+                }
+            }
+
+            function viewSite(tag) {
+                window.top.location = '/' + tag;
+            }
+        </script>
+}

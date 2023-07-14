@@ -1,0 +1,56 @@
+﻿<p>
+    This email is to inform you that [Request.RequestorName] has placed a request for assets on CARE which has been approved. The
+    asset can now be shipped to the requestor listed below. <br />   <br />
+
+    Approved by:<br />
+    <a href="mailto:[FromAddress]">[FromName]</a><br /><br />
+
+    <b>Comment:</b><br />
+    [AssetRequestDetail.TaskComment]
+    <br />   <br />
+
+    <img id="assetImageDeniedET" class="padding-bottom-10 margin-left-10 img-container"
+         src="[PrimaryImageUrl]" alt="" /> <br /><br />
+
+    <b>Asset Description</b><br />
+    Title: [AssetRequestDetail.Title]<br />
+    Manufacturer: [AssetRequestDetail.Manufacturer]<br />
+    Model: [AssetRequestDetail.ModelNumber]<br />
+    Location: [AssetRequestDetail.LocationName]<br />
+    Hit Number:  [AssetRequestDetail.HitNumber]<br />
+    [if AssetRequestDetail.HasClientIdNumber]
+    ClientID Number : [AssetRequestDetail.ClientIdNumber]<br />
+    [end]
+    [if AssetRequestDetail.DisplayBookValue]
+    Book value: [AssetRequestDetail.FormattedBookValue]<br />
+    [else]
+    Book value: [SiteSettings.BookValueMessage]<br />
+    [end]
+    [if AssetRequestDetail.HasCustomData]
+    [foreach AssetRequestDetail.CustomDataPairs]
+    [Key] - [Value]<br />
+    [end]
+    [end]
+    <br />
+    Link: [AssetURL]
+    <br />   <br />
+
+    <b>Asset Delivery Address</b><br />
+    [Request.RequestorName]<br />
+    [Request.RequestorEmail]<br />
+    [Request.RequestorPhone]<br />
+    [Request.ShipToAddress.Street1]<br />
+    [Request.ShipToAddress.Street2]<br />
+    [Request.ShipToAddress.City] [Request.ShipToAddress.State] [Request.ShipToAddress.Zip]
+    <br /><br />
+
+    <b>Owner Details</b><br />
+    Name:[AssetRequestDetail.OwnerName]<br />
+    Email: [AssetRequestDetail.OwnerEmail]<br />
+    Phone: [AssetRequestDetail.OwnerPhone]
+    <br /><br />
+
+    <b>Request Note:</b><br />
+    [Request.Notes]
+    <br />
+</p>

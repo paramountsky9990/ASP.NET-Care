@@ -1,0 +1,35 @@
+﻿<p>
+    Greetings! [UserFirstName] [UserLastName]
+</p>
+
+
+
+<p>
+    This email provides summary of Assets uploaded to the site in last week. Please review the details below.<br />   <br />
+</p>
+
+
+
+<table>
+    <tr><th></th><th>Details</th></tr>
+
+    [foreach AssetsUploaded]
+
+    <tr>
+        <td>
+            <img id="assetImageApprovedET" class="padding-bottom-10 margin-left-10 img-container"
+                 src="[PrimaryImageURL]" alt="" /> <br /><br />
+
+        </td>
+        <td>
+            <p>
+                Title: [Asset.Title]<br />
+                Link: [AssetURL]   <br />
+                Expiration: [Asset.AvailForSale]<br />
+            </p><br /><br />
+        </td>
+    </tr>
+
+    [end]
+
+</table>

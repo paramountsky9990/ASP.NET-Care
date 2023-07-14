@@ -1,0 +1,266 @@
+﻿@using System.Activities.Statements
+@using System.Diagnostics
+@using System.Linq.Expressions
+@using HGP.Web.Models
+@using Newtonsoft.Json
+@model HGP.Web.Models.Assets.AssetIndexModel
+
+<style>
+    .img-container {
+        width: 100%;
+        max-height: 380px;
+    }
+
+    img.img-responsive {
+        width: 75%;
+    }
+
+    .scrollstyle
+    {
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+
+</style>
+
+@helper AssetImage(string portalTag, IList<MediaFileDto> mediaFiles)
+{
+    if ((mediaFiles != null) && (mediaFiles.Count > 0))
+    {
+        <img id="asset-image" class="padding-bottom-10 margin-left-10 img-container" src="https://s3-us-west-1.amazonaws.com/hgpmedia/@portalTag/i/@mediaFiles[0].FileName"/>
+        if (mediaFiles.Count > 1)
+         {
+             <div class="scrollstyle">
+                 <div class="">
+                     @foreach (var mediaFile in mediaFiles)
+                     {
+                         <div class="col-xs-4">
+                             <a class="thumbnail" href="#">
+                                 <img class="img-responsive" src="https://s3-us-west-1.amazonaws.com/hgpmedia/@portalTag/i/@mediaFile.FileName"/>
+                             </a>
+                         </div>
+                     }
+                 </div>
+             </div>
+         }
+    }
+}
+<script type="text/javascript">
+    $(function () {
+        $("img.img-responsive").mouseover(function (e) {
+            var imgName = $(this).attr("src").replace("-s", "");
+
+            //$("#asset-image").css({
+            //    display: 'none'
+            //});
+
+            $("#asset-image").attr('src', imgName).load(function () {
+                $("#asset-image").css({
+                    display: 'block',
+                    'padding-bottom': '10px'
+                });
+            });
+        });
+
+        $("img.img-responsive").mouseout(function (e) { });
+    });
+</script>
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h1 class="modal-title"></h1>
+</div>
+
+<div class="modal-body">
+    <div class="">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="padding-left-10 padding-bottom-10">
+                    <h2 class="font-md">
+                        @Model.Title
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                @AssetImage(Model.SiteSettings.PortalTag, Model.Media)
+                <p class="padding-10 text-muted padding-bottom-25">
+                    @Html.Raw(Model.Description)
+                </p>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#details" data-toggle="tab">Details</a></li>
+                </ul>
+                <div id='content' class="tab-content">
+                    <div class="tab-pane active" id="details">
+                        <ul>
+                            @if (!string.IsNullOrEmpty(Model.ServiceStatus))
+                            {
+                                <li>
+                                    <p class="text-muted">
+                                        Status: @Model.ServiceStatus
+                                    </p>
+                                </li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Condition))
+                            {
+                                <li>
+                                    <p class="text-muted">
+                                        Condition: @Model.Condition
+                                    </p>
+                                </li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.HitNumber))
+                            {
+                                <li>
+                                    <p class="text-muted">
+                                        Hit #: @Model.HitNumber
+                                    </p>
+                                </li>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.ClientIdNumber))
+                            {
+                                <li>
+                                    <p class="text-muted">
+                                        Client Id #: @Model.ClientIdNumber
+                                    </p>
+                                </li>
+                            }
+                            @if (Model.CustomData != null)
+                            {
+                                var jsonFields = JsonConvert.DeserializeObject<List<dynamic>>(Model.CustomData);
+                                foreach (var field in jsonFields)
+                                {
+                                    <li>
+                                        <p class="text-muted">
+                                            @field.key: @field.value
+                                        </p>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <ul class="list-unstyled">
+                    @if (!string.IsNullOrEmpty(@Model.Manufacturer))
+                    {
+                        <li>
+                            <p class="text-muted">
+                                Manufacturer: @Model.Manufacturer
+                            </p>
+                        </li>
+                    }
+                    @if (!string.IsNullOrEmpty(@Model.ModelNumber))
+                    {
+                        <li>
+                            <p class="text-muted">
+                                Model: @Model.ModelNumber
+                            </p>
+                        </li>
+                    }
+                    @if (Model.DisplayBookValue)
+                    {
+                        <li>
+                            <p class="text-muted">
+                                Book Value: @MyHelpers.FormatCurrency(Html, Model.BookValue)
+                            </p>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <p class="text-muted">
+                                Book Value: @Model.SiteSettings.BookValueMessage
+                            </p>
+                        </li>
+
+                    }
+                    <li>
+                        <p class="text-muted">
+                            <i class="fa fa-calendar"></i>&nbsp;&nbsp;Available: <br /> &nbsp;&nbsp;<span class="padding-right-5" id="availForRedeploy"></span>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="text-muted">
+                            <i class="fa fa-calendar"></i>&nbsp;&nbsp;Expires: <br /> &nbsp;&nbsp;<span class="padding-right-5" id="availForSale"></span>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="text-muted text-nowrap">
+                            <span class="padding-right-5">CONTACT INFO:</span>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="text-muted text-nowrap">
+                            &nbsp;&nbsp;@Model.OwnerName
+                        </p>
+                    </li>
+                    <li>
+                        <p class="text-muted text-nowrap">
+                            &nbsp;&nbsp;<i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:@Model.OwnerEmail">@Model.OwnerEmail</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="text-muted text-nowrap">
+                            &nbsp;&nbsp;<i class="fa fa-phone"></i>&nbsp;&nbsp; <span id="phone" class="padding-right-5">@Model.OwnerPhone</span>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="text-muted text-nowrap">
+                            &nbsp;&nbsp; <span id="requestCount" class="padding-right-5">Requests: @Model.RequestCount</span>
+                        </p>
+                    </li>
+                </ul>
+                <br>
+                <div class="padding-bottom-10 padding-top-10">
+                    @if (Model.MinutesRemaining > 0)
+                    {
+                        @:<a id="addToCartBtn" class="btn btn-success header-btn hidden-mobile">
+                        @:<i class="fa fa-plus"></i> Request for Transfer
+                        @:</a>
+                    }
+                    else
+                    {
+                        <br/><span style="font-weight: bold;">ASSET NO LONGER AVAILABLE</span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#addToCartBtn").on("click", function () {
+            $('#addToCartBtn').prop('disabled', true);
+            myViewModel.addToCart('@Model.HitNumber');
+        });
+
+        $('#availForRedeploy').append(formatUtcDateToLocal('@Model.AvailForRedeploy'));
+        $('#availForSale').append(formatUtcDateToLocal('@Model.AvailForSale'));
+
+        $("#phone").html(function (i, DATA) {
+            var data = formatPhoneNumber(DATA);
+            return data;
+        });
+
+        function formatPhoneNumber(s) {
+            var s2 = ("" + s).replace(/\D/g, '');
+            var m = s2.match(/^(\d{3})(\d{3})(\d{4})$/);
+            return (!m) ? null : "(" + m[1] + ") " + m[2] + "-" + m[3];
+        }
+
+        function formatUtcDateToLocal(dateTime) {
+            var tz = jstz.determine();
+            var str = moment.tz(dateTime, tz.name()).format('M/D/YYYY h:mm A z');
+            return str;
+        }
+    });
+
+
+</script>
+

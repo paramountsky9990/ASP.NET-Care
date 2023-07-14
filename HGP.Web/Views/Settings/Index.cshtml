@@ -1,0 +1,991 @@
+﻿@model HGP.Web.Models.Settings.SiteSettingsHomeModel
+@{
+    ViewBag.Title = "Index";
+    ViewBag.MainClass = "content_full_width";
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+}
+
+@Styles.Render("~/bundles/summernotestyles")
+@Scripts.Render("~/bundles/summernote")
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+    <div class="tt-icon-box-fixed text-align-left padding-bottom-5">
+        <div class="col-sm-6">
+            <header>
+                <h2><strong>Site Settings</strong>: @Model.SiteSettings.CompanyName</h2>
+            </header>
+        </div>
+    </div>
+
+    <!-- widget div-->
+    <div>
+        <div class="widget-body no-padding">
+            <div class="custom-scroll table-responsive">
+                <table id="settings-grid" class="table table-striped table-bordered table-hover" width="100%">
+                    <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>Setting</th>
+                        <th>Current Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="col-md-1"><button id="showHomePageMessageModal" href="#myHomePageMessageModal" class="btn btn-xs btn-default" data-original-title=""><i class="fa fa-pencil"></i></button></td>
+                        <td class="col-md-3">Home page message</td>
+                        <td id="homepagemessagecell">@Model.HomePageMessageNoHtml</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><button id="showRegistrationMessageModal" href="#myRegistrationMessageModal" class="btn btn-xs btn-default" data-original-title=""><i class="fa fa-pencil"></i></button></td>
+                        <td class="col-md-3">Registration message</td>
+                        <td id="registrationMessageCell">@Model.RegistrationMessageNoHtml</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"></td>
+                        <td class="col-md-3">Registration link</td>
+                        <td id="">@Model.RegistrationUrl</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><button id="showCustomCssModal" href="#myCustomCssModal" class="btn btn-xs btn-default" data-original-title=""><i class="fa fa-pencil"></i></button></td>
+                        <td class="col-md-3">Custom Css</td>
+                        <td id="customCssCell">@Model.CustomCssPreview</td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><button id="showLogoModal" href="#myLogoModal" class="btn btn-xs btn-default" data-original-title=""><i class="fa fa-pencil"></i></button></td>
+                        <td class="col-md-3">Logo</td>
+                        <td id="customCssCell">
+                            @if (Model.SiteSettings.Logo != null)
+                            {
+                                <img src="https://s3-us-west-1.amazonaws.com/hgpmedia/@Model.SiteSettings.PortalTag/@Model.SiteSettings.Logo.FileName" alt="@Model.SiteSettings.CompanyName" />
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><button id="showApprovalEmailsModal" href="#myApprovalEmailsModal" class="btn btn-xs btn-default" data-original-title=""><i class="fa fa-pencil"></i></button></td>
+                        <td class="col-md-3">Send approval message to</td>
+                        <td id="approvingManagerNameCell">
+                            <ul id="approvalEmailsPreview">
+                                <li>
+                                    Requestor
+                                </li>
+                                @foreach (var ccAddress in Model.SiteSettings.ApprovalCcAddresses)
+                                {
+                                    <li>@ccAddress</li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-1"><button id="showBookValueMessageModal" href="#myBookValueMessageModal" class="btn btn-xs btn-default" data-original-title=""><i class="fa fa-pencil"></i></button></td>
+                        <td class="col-md-3">Book value message</td>
+                        <td id="bookValueMessageCell">@Model.BookValueMessage</td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-1"><button id="showRequestPageMessageModal" href="#myRequestPageMessageModal" class="btn btn-xs btn-default" data-original-title=""><i class="fa fa-pencil"></i></button></td>
+                            <td class="col-md-3">Request page instructions</td>
+                            <td id="requestPageMessageCell">@Model.RequestPageMessage</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- end widget content -->
+    </div>
+    <!-- end widget div -->
+</section>
+<!-- end widget grid -->
+<!-- HomePageMessage Modal -->
+<div class="modal fade" id="myHomePageMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <i class="fa fa-pencil-square-o fa-fw "></i> Edit home page message
+                </h1>
+            </div>
+            <div class="modal-body no-padding">
+
+                <div class="summernoteHomePageEdit">
+                </div>
+
+                <div class="widget-footer smart-form">
+                    <div class="btn-group">
+                        <button class="btn btn-sm" id="cancelHomePageEdit" type="button">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" type="button" onclick="saveHomePageMessage('@Model.Id');">
+                            <i class="fa fa-check"></i> Save
+                        </button>
+                    </div>
+
+                </div>
+
+
+
+                <script>
+
+
+                    $(document).ready(function () {
+
+                        function showHomePageMessageModal() {
+                            $('#myHomePageMessageModal').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+
+                            $('.summernoteHomePageEdit').summernote({
+                                height: 380,
+                                focus: false,
+                                tabsize: 2
+                            });
+                        }
+
+                        @*$("#myHomePageMessageModal").on("shown.bs.modal", function (e) {
+                        var promise = $.fn.getHomePageMessage('@Model.Id');
+
+                        promise.success(function (data) {
+                            $(".summernoteHomePageEdit").code(data.message);
+                        });
+                    });*@
+
+
+                        $('#cancelHomePageEdit').click(function () {
+                            $('#myHomePageMessageModal').modal('hide');
+                        });
+
+                        $('#showHomePageMessageModal').click(function () {
+                            showHomePageMessageModal();
+
+                            var promise = $.fn.getHomePageMessage('@Model.Id');
+
+                            promise.success(function (data) {
+                                $(".summernoteHomePageEdit").code(data.message);
+                            });
+                        });
+                    });
+
+                </script>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Registration message Modal -->
+<div class="modal fade" id="myRegistrationMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <i class="fa fa-pencil-square-o fa-fw "></i> Edit registration message
+                </h1>
+            </div>
+            <div class="modal-body no-padding">
+
+                <div class="summernoteRegistrationEdit">
+                </div>
+
+                <div class="widget-footer smart-form">
+                    <div class="btn-group">
+                        <button class="btn btn-sm" id="cancelRegistrationEdit" type="button">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" type="button" onclick="saveRegistrationMessage('@Model.Id');">
+                            <i class="fa fa-check"></i> Save
+                        </button>
+                    </div>
+
+                </div>
+
+
+
+                <script>
+
+
+                    $(document).ready(function () {
+
+                        function showRegistrationMessageModal() {
+                            $('#myRegistrationMessageModal').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+
+                            $('.summernoteRegistrationEdit').summernote({
+                                height: 380,
+                                focus: false,
+                                tabsize: 2
+                            });
+                        }
+
+                        @*$("#myRegistrationMessageModal").on("shown.bs.modal", function (e) {
+                        var promise = $.fn.getRegistrationMessage('@Model.Id');
+
+                        promise.success(function (data) {
+                            $(".summernoteRegistrationEdit").code(data.message);
+                        });
+                    });*@
+
+
+                        $('#cancelRegistrationEdit').click(function () {
+                            $('#myRegistrationMessageModal').modal('hide');
+                        });
+
+                        $('#showRegistrationMessageModal').click(function () {
+                            showRegistrationMessageModal();
+
+                            var promise = $.fn.getRegistrationMessage('@Model.Id');
+
+                            promise.success(function (data) {
+                                $(".summernoteRegistrationEdit").code(data.message);
+                            });
+                        });
+                    });
+
+                </script>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Css Modal -->
+<div class="modal fade" id="myCustomCssModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <i class="fa fa-pencil-square-o fa-fw "></i> Edit custom Css
+                </h1>
+            </div>
+            <div class="modal-body no-padding">
+
+                <textarea rows="20" cols="100" class="summernoteCustomCssEdit" style="width:100%"></textarea>
+
+                <div class="widget-footer smart-form">
+                    <div class="btn-group">
+                        <button class="btn btn-sm" id="cancelCustomCssEdit" type="button">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" type="button" onclick="saveCustomCss('@Model.Id');">
+                            <i class="fa fa-check"></i> Save
+                        </button>
+                    </div>
+
+                </div>
+
+
+
+                <script>
+
+
+                    $(document).ready(function () {
+
+                        function showCustomCssModal() {
+                            $('#myCustomCssModal').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+
+                        }
+
+                        $('#cancelCustomCssEdit').click(function () {
+                            $('#myCustomCssModal').modal('hide');
+                        });
+
+                        $('#showCustomCssModal').click(function () {
+                            showCustomCssModal();
+
+                            var promise = $.fn.getCustomCss('@Model.Id');
+
+                            promise.success(function (data) {
+                                $(".summernoteCustomCssEdit").html(data.message);
+                            });
+                        });
+                    });
+
+                </script>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Css Modal -->
+<style>
+    #myLogoModal .modal-dialog {
+        width: 45%;
+    }
+</style>
+<div class="modal fade" id="myLogoModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <img src="/content/img/camera.png" height="32" alt="SmartAdmin"> Upload logo
+                </h1>
+            </div>
+            <div class="modal-body no-padding">
+
+
+                @using (Html.BeginRouteForm("PortalRoute", new { controller = "Upload", Action = "UploadLogo" }, FormMethod.Post, new { @class = "smart-form", role = "form", enctype = "multipart/form-data" }))
+                {
+                    <fieldset>
+                        <div class="form-group">
+                            <section>
+
+                                <label class="col-md-2 control-label">File input</label>
+                                <div class="col-md-10">
+                                    <input type="file" class="btn btn-default" id="fileData" name="fileData">
+                                    <p class="help-block">
+                                        Select an image (jpg, gif or png)
+                                    </p>
+                                </div>
+                            </section>
+                        </div>
+                    </fieldset>
+
+                    <div class="widget-footer smart-form">
+                        <div class="btn-group">
+                            <button class="btn btn-sm" id="cancelLogoEdit" type="button">
+                                <i class="fa fa-times"></i> Cancel
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fa fa-check"></i> Upload
+                            </button>
+                        </div>
+
+                    </div>
+                }
+
+
+
+
+
+                <script>
+
+
+                    $(document).ready(function () {
+
+                        function showLogoModal() {
+                            $('#myLogoModal').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+
+                        }
+
+                        $('#cancelLogoEdit').click(function () {
+                            $('#myLogoModal').modal('hide');
+                        });
+
+                        $('#showLogoModal').click(function () {
+                            showLogoModal();
+                        });
+                    });
+
+                </script>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Approvals CC filter Modal -->
+<style>
+    #myApprovalEmailsModal .modal-dialog {
+        width: 45%;
+    }
+</style>
+<div class="modal fade" id="myApprovalEmailsModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <i class="fa fa-fw fa-envelope-o"></i> Edit Approval Message Recipients
+                </h1>
+            </div>
+            <div class="modal-body no-padding">
+
+                @using (Html.BeginRouteForm("PortalRoute", new { controller = "Settings", Action = "EddApprovalCcList" }, FormMethod.Post, new { @class = "smart-form", role = "form" }))
+                {
+                    @Html.HiddenFor(x => x.SiteId)
+                    <fieldset>
+
+                        <section>
+                            Add email address
+                        </section>
+                        <section>
+                            <div class="form-group">
+                                <section class="col col-8 form-group section">
+                                    <label class="input field" id="NewApprovalCCAddressLabel">
+                                        @Html.TextBox("NewApprovalCCAddress", "", new { @placeholder = "Email", @class = "error" })
+                                    </label>
+                                    <button type="button" class="btn btn-sm btn-primary margin-top-10" onclick="addApprovalEmail();">
+                                        <i class="fa fa-check"></i> Add
+                                    </button>
+                                </section>
+                            </div>
+                        </section>
+                    </fieldset>
+                    <fieldset>
+                        <section>
+                            Add email address
+                        </section>
+                        <section>
+                            <div class="form-group">
+                                <section class="col col-6 form-group">
+                                    <ul id="approversList"></ul>
+                                    <span id="approversList"></span>
+                                </section>
+                            </div>
+                        </section>
+
+                    </fieldset>
+                    <label class="error" id="allowSelfSelectedApproversErrorMsg"></label>
+                    <div class="widget-footer smart-form">
+                        <div class="btn-group">
+                            <button class="btn btn-sm" id="cancelShowApprovalEmailsModal" type="button">
+                                <i class="fa fa-times"></i> Cancel
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-primary" onclick="saveApproverCcList('@Model.SiteId');">
+                                <i class="fa fa-check"></i> Save
+                            </button>
+                        </div>
+
+                    </div>
+                }
+
+
+                <script>
+                    $(document).ready(function () {
+                        function showApprovalEmailsModal() {
+                            $('#myApprovalEmailsModal').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+                            $('#NewApprovalCCAddress').val('');
+                        }
+
+                        $('#cancelShowApprovalEmailsModal').click(function () {
+                            $('#myApprovalEmailsModal').modal('hide');
+                        });
+
+                        $('#showApprovalEmailsModal').click(function () {
+                            var promise = $.fn.getApproverList('@Model.SiteId');
+
+                            promise.success(function(data) {
+                                var arrayLength = data.addresses.length;
+                                    $("#approversList").empty();
+                                    for (var i = 0; i < arrayLength; i++) {
+                                        email = data.addresses[i];
+                                        appendEmailAddress("#approversList", email);
+                                    }
+                                }
+                            );
+
+                            showApprovalEmailsModal();
+
+                        });
+                    });
+                </script>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- BookValue message Modal -->
+<div class="modal fade" id="myBookValueMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <i class="fa fa-pencil-square-o fa-fw "></i> Edit BookValue message
+                </h1>
+            </div>
+            <div class="modal-body no-padding smart-form">
+
+                        @Html.LabelFor(m => m.BookValueMessage, new { @class = "name" })
+                        @Html.TextBoxFor(m => m.BookValueMessage, new { @class = "form-control", @placeholder = "Message" })
+                           
+
+                <div class="widget-footer smart-form">
+                    <div class="btn-group">
+                        <button class="btn btn-sm" id="cancelBookValueEdit" type="button">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" type="button" onclick="saveBookValueMessage('@Model.Id');">
+                            <i class="fa fa-check"></i> Save
+                        </button>
+                    </div>
+
+                </div>
+
+                <script>
+                    $(document).ready(function () {
+                        function showBookValueMessageModal() {
+                            $('#myBookValueMessageModal').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+                        }
+
+                        $('#cancelBookValueEdit').click(function () {
+                            $('#myBookValueMessageModal').modal('hide');
+                        });
+
+                        $('#showBookValueMessageModal').click(function () {
+                            showBookValueMessageModal();
+                        });
+                    });
+                </script>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- RequestPage message Modal -->
+<div class="modal fade" id="myRequestPageMessageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h1 class="modal-title">
+                    <i class="fa fa-pencil-square-o fa-fw "></i> Edit RequestPage message
+                </h1>
+            </div>
+            <div class="modal-body no-padding smart-form">
+
+                @Html.LabelFor(m => m.RequestPageMessage, new { @class = "name" })
+                @Html.TextAreaFor(m => m.RequestPageMessage, 5, 75, new { @class = "form-control", @placeholder = "Message" })
+
+
+                <div class="widget-footer smart-form">
+                    <div class="btn-group">
+                        <button class="btn btn-sm" id="cancelRequestPageEdit" type="button">
+                            <i class="fa fa-times"></i> Cancel
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" type="button" onclick="saveRequestPageMessage('@Model.Id');">
+                            <i class="fa fa-check"></i> Save
+                        </button>
+                    </div>
+
+                </div>
+
+                <script>
+                    $(document).ready(function () {
+                        function showRequestPageMessageModal() {
+                            $('#myRequestPageMessageModal').modal({
+                                keyboard: false,
+                                backdrop: 'static'
+                            });
+                        }
+
+                        $('#cancelRequestPageEdit').click(function () {
+                            $('#myRequestPageMessageModal').modal('hide');
+                        });
+
+                        $('#showRequestPageMessageModal').click(function () {
+                            showRequestPageMessageModal();
+                        });
+                    });
+                </script>
+
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/summernote")
+    <script type="text/javascript">
+        function saveBookValueMessage(siteId) {
+            var message = $('#BookValueMessage').val();
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "EditBookValueMessage", controller = "Settings" })';
+            var jsonData = JSON.stringify({ "siteId": siteId, "newMessage": message.replace(/\r?\n|\r/, "") });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        $('#bookValueMessageCell').html(data.preview);
+                        $('#myBookValueMessageModal').modal('hide');
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function saveRequestPageMessage(siteId) {
+            var message = $('#RequestPageMessage').val();
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "EditRequestPageMessage", controller = "Settings" })';
+            var jsonData = JSON.stringify({ "siteId": siteId, "newMessage": message.replace(/\r?\n|\r/, "") });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        $('#requestPageMessageCell').html(data.preview);
+                        $('#myRequestPageMessageModal').modal('hide');
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+
+        $.fn.getHomePageMessage = function (siteId) {
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "GetHomePageMessage", controller = "Settings" })';
+
+            return $.ajax({
+                url: action,
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "siteId": siteId
+                },
+                contentType: "application/json charset=utf-8",
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function saveHomePageMessage(siteId) {
+            var message = $('.summernoteHomePageEdit').code();
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "EditHomePageMessage", controller = "Settings" })';
+            var jsonData = JSON.stringify({ "siteId": siteId, "newMessage": message.replace(/\r?\n|\r/, "") });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        $('#homePageMessageCell').html(data.preview);
+                        $('#myHomePageMessageModal').modal('hide');
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        $.fn.getRegistrationMessage = function (siteId) {
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "GetRegistrationMessage", controller = "Settings" })';
+
+            return $.ajax({
+                url: action,
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "siteId": siteId
+                },
+                contentType: "application/json charset=utf-8",
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function saveRegistrationMessage(siteId) {
+            var message = $('.summernoteRegistrationEdit').code();
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "EditRegistrationMessage", controller = "Settings" })';
+            var jsonData = JSON.stringify({ "siteId": siteId, "newMessage": message.replace(/\r?\n|\r/, "") });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        $('#registrationMessageCell').html(data.preview);
+                        $('#myRegistrationMessageModal').modal('hide');
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+
+        $.fn.getCustomCss = function (siteId) {
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "GetCustomCss", controller = "Settings" })';
+
+            return $.ajax({
+                url: action,
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "siteId": siteId
+                },
+                contentType: "application/json charset=utf-8",
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function saveCustomCss(siteId) {
+            var message = $('.summernoteCustomCssEdit').code();
+            var action = '@Url.RouteUrl("PortalRoute", new { action = "EditCustomCss", controller = "Settings" })';
+            var jsonData = JSON.stringify({ "siteId": siteId, "newCss": message.replace(/\r?\n|\r/, "") });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        $('#customCssCell').html(data.preview);
+                        $('#myCustomCssModal').modal('hide');
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        $.fn.getDefaultApprover = function (siteId) {
+            var action = '@Url.RouteUrl("PortalRoute", new { portaltag = Model.PortalTag, action = "GetDefaultApprover", controller = "Settings" })';
+
+            return $.ajax({
+                url: action,
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "siteId": siteId
+                },
+                contentType: "application/json charset=utf-8",
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function saveDefaultApprover(siteId) {
+            var allowSelfSelectedApprovers = $('#AllowSelfSelectedApprovers').is(":checked");
+            var approvingManagerName = $('#ApprovingManagerName').val();
+            var approvingManagerEmail = $('#ApprovingManagerEmail').val();
+            var approvingManagerPhone = $('#ApprovingManagerPhone').val();
+            var action = '@Url.RouteUrl("PortalRoute", new { portaltag = Model.PortalTag, action = "EditDefaultApprover", controller = "Settings" })';
+            var jsonData = JSON.stringify({
+                "siteId": siteId,
+                "allowSelfSelectedApprovers": allowSelfSelectedApprovers,
+                "approvingManagerName": approvingManagerName,
+                "approvingManagerEmail": approvingManagerEmail,
+                "approvingManagerPhone": approvingManagerPhone,
+            });
+
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        if (data.allowSelfSelectedApprovers)
+                            $('#allowSelfSelectedApproversCell').html('Yes');
+                        else
+                            $('#allowSelfSelectedApproversCell').html('No');
+
+                        $('#approvingManagerNameCell').html(data.approvingManagerName + ' - ' + approvingManagerEmail + ' - ' + approvingManagerPhone);
+                        $('#myAllowSelfSelectedApproversModal').modal('hide');
+                    } else {
+                        $('#allowSelfSelectedApproversErrorMsg').html(data.message);
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        $.fn.getApproverList = function (siteId) {
+            var action = '@Url.RouteUrl("PortalRoute", new { portaltag = Model.PortalTag, action = "GetApproverCcList", controller = "Settings" })';
+
+            return $.ajax({
+                url: action,
+                type: "GET",
+                dataType: "json",
+                data: {
+                    "siteId": siteId
+                },
+                contentType: "application/json charset=utf-8",
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function saveApproverCcList(siteId) {
+            var addresses = [];
+
+            $('#approversList').children().each(function () {
+                var $this = $(this);
+                var item = { id: $this.attr('value'), title: $this.text().trim() };
+                addresses.push(item.title);
+            });
+
+            var action = '@Url.RouteUrl("PortalRoute", new { portaltag = Model.PortalTag, action = "EditApproverCcList", controller = "Settings" })';
+            var jsonData = JSON.stringify({ "siteId": siteId, "emailAddresses": addresses });
+            $.ajax({
+                url: action,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json charset=utf-8",
+                data: jsonData,
+                processData: false,
+                success: function (data) {
+                    if (data.success) {
+                        $("#approvalEmailsPreview").empty();
+                        $("#approvalEmailsPreview").append('<li>Requestor</li>');
+
+                        $.each(data.addresses, function (index, value) {
+                            $("#approvalEmailsPreview").append('<li>' + value + '</li>');
+                        });
+                        $('#myApprovalEmailsModal').modal('hide');
+                    }
+                },
+                error: function (jqXhr, textStatus, errorThrown) {
+                    alert("Error '" + jqXhr.status + "' (textStatus: '" + textStatus + "', errorThrown: '" + errorThrown + "')");
+                },
+                complete: function () {
+                }
+            });
+        }
+
+        function addApprovalEmail() {
+            var email = $('#NewApprovalCCAddress').val().toLowerCase();
+            if (isEmail(email)) {
+                $('#NewApprovalCCAddressLabel').removeClass('state-error');
+                $('#NewApprovalCCAddressLabel').addClass('state-success');
+                var allEmails = $("#approversList").html();
+                if (allEmails.indexOf(email) == -1) {
+                    appendEmailAddress("#approversList", email);
+                    $('#NewApprovalCCAddress').val('');
+                }
+            } else {
+                $('#NewApprovalCCAddressLabel').addClass('state-error');
+                $('#NewApprovalCCAddressLabel').removeClass('state-success');
+            }
+        }
+
+        function appendEmailAddress(selector, email) {
+            $(selector).append('<li>' + email + ' &nbsp;&nbsp;<i onclick="removeApprovalEmail(this.id)" id="' + email + '" class="fa fa-remove" title="Remove" style="font-size:18px;color:red"></i></li>');
+        }
+
+        function removeApprovalEmail(email) {
+            $("#approversList li").each(function () {
+                if ($(this).text().indexOf(email) !== -1)
+                    $(this).remove();
+            });
+        }
+
+        function isEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@@"]+(\.[^<>()\[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+    </script>
+}
+

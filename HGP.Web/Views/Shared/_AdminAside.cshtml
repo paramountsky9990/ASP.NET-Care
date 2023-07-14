@@ -1,0 +1,43 @@
+﻿@using System.Reflection
+@using HGP.Web.Infrastructure
+@model AdminPageModel
+<!-- Left panel : Navigation area -->
+<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+@if (Request.IsAuthenticated && User.IsInRole("SuperAdmin"))
+{
+    <aside id="left-panel">
+        <!-- User info -->
+        @{ Html.RenderPartial("_CurrentUser"); }
+        <!-- end user info -->
+        <!-- NAVIGATION : This navigation is also responsive
+
+        To make this navigation dynamic please make sure to link the node
+        (the reference to the nav > ul) after page load. Or the navigation
+        will not initialize.
+        -->
+        <nav>
+            <!-- NOTE: Notice the gaps after each icon usage <i></i>..
+            Please note that these links work a bit different than
+            traditional href="" links. See documentation for details.
+            -->
+            <ul>
+                <li class="@Html.RouteIf("AdminHome", "active")">
+                    <a href="@Url.RouteUrl("AdminPortalRoute", new {action = "Index", controller = "AdminHome"})" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
+                </li>
+
+
+                <li class="@Html.RouteIf("AdminUsers", "active")">
+                    <a href="@Url.RouteUrl("AdminPortalRoute", new {action = "Index", controller = "AdminUsers"})" title="Users"><i class="fa fa-lg fa-fw fa-male"></i> <span class="menu-item-parent">Users</span></a>
+                </li>
+
+            </ul>
+        </nav>
+        <div class="padding-10">
+            <span>Database: @Model.CurrentDatabase </span>
+        </div>
+        <span class="minifyme" data-action="minifyMenu">
+            <i class="fa fa-arrow-circle-left hit"></i>
+        </span>
+    </aside>
+}
+<!-- END NAVIGATION -->

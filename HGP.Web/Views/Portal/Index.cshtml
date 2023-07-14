@@ -1,0 +1,251 @@
+﻿@using HGP.Web.Models.Assets
+@model HGP.Web.Models.PortalHomeModel
+
+@{
+    ViewBag.Title = "Home Page";
+    ViewBag.MainClass = "content_full_width";
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+}
+
+<div class="tt-icon-box-fixed text-align-left">
+    <span>@Html.Raw(Model.SiteSettings.HomePageMessage)</span>
+</div>
+<br class="clear">
+
+<div class="tt-icon-box-fixed margin-bottom-10 margin-top-10">
+    @using (Html.BeginRouteForm("ListRoute", new { controller = "List", Action = "Search" }, FormMethod.Get, new { @class = " ", role = "form" }))
+    {
+        <div class="row" style="margin: 15px;">
+            <div class="col-xs-9 col-xs-offset-0 col-md-8 col-md-offset-1">
+                @Html.TextBoxFor(x => x.HeaderModel.SearchText, new { @class = "form-control", Name = "search", placeholder = "Keyword, manufacturer, model" })
+            </div>
+            <div class="col-xs-1 col-md-1">
+                <input type="submit" value="Search  &raquo;" class="btn btn-primary btn-sm" style="font-size: 18px;padding: 4px 10px 4px; margin-top: -2px;" />
+            </div>
+        </div>
+
+        if (Model.SiteSettings.Features.Contains("wishlist"))
+        {
+            <div class="row"><span></span></div>
+            <div class="row" style="height: 30px; line-height:30px; position: relative; display: table; vertical-align: middle; margin: 0 auto 0;">
+                <h4>
+                    <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "wishlist"})" style="position: relative; display: table-cell;
+                         vertical-align: middle; height: 30px; line-height:30px;" class="aligncenter">Can't find what you're looking for? Create a wish.</a>
+                </h4>
+            </div>
+        }
+    }
+</div>
+
+<br class="clear">
+<style>
+    .all-categories .cat-column {
+        font-size: 13px;
+        text-align: left;
+    }
+
+    .all-categories h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    .all-categories span {
+        font-size: 20px;
+        background-color: white !important;
+    }
+
+    .all-assets span {
+        font-size: 20px;
+        background-color: white !important;
+    }
+
+    .main-area {
+        width: 980px;
+        margin: 0 auto;
+    }
+    .top-five h3 {
+        color: #222;
+        background: none repeat scroll 0 0 #efefef !important;
+    }
+    h3 {
+        color: #222 !important;
+        background: none repeat scroll 0 0 white !important;
+    }
+    .heading-horizontal {
+        margin-top: 0px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+
+</style>
+
+
+
+<div class="tt-icon-box-fixed padding-10 all-categories">
+    <h1 class="heading-horizontal"><span>All Categories</span></h1>
+    @{
+        var rows = Model.AllCategories.Count() % 3 == 0 ? Model.AllCategories.Count() / 3 : (Model.AllCategories.Count() / 3) + 1;
+
+        for (int i = 0; i < rows; i++)
+        {
+            <div class="one_third cat-column">
+                @FormatCategory(Html, Url, Model.AllCategories.Skip(i).FirstOrDefault())
+            </div>
+            <div class="one_third cat-column">
+                @FormatCategory(Html, Url, Model.AllCategories.Skip(i + rows).FirstOrDefault())
+            </div>
+            <div class="one_third_last cat-column">
+                @FormatCategory(Html, Url, Model.AllCategories.Skip(i + rows * 2).FirstOrDefault())
+            </div>
+        }
+
+    }
+</div>
+
+
+@helper FormatCategory(HtmlHelper html, UrlHelper url, RecentCategory category)
+{
+    if (category != null)
+    {
+        <a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list", category = category.UriString})">@category.Name (@category.Count)</a>
+    }
+}
+
+<br class="clear">
+
+<div class="tt-testimonial-wrapper">
+
+    <div class="one_third tt-column top-five">
+        <h3 class="heading-horizontal"><span>Manufacturers</span></h3>
+        @if (Model.AllManufacturers.Any())
+        {
+            <ol>
+                @foreach (var category in Model.AllManufacturers.Take(10))
+                {
+                    <li><a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list", search = category.UriString})">@category.Name (@category.Count)</a></li>
+                }
+            </ol>
+        }
+        else
+        {
+            <p>
+                Start here by browsing for avaliable assets.
+            </p>
+            <p><a class="btn btn-default" href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list"})">Browse &raquo;</a></p>
+        }
+    </div>
+
+
+    <div class="one_third tt-column top-five">
+        <h3 class="heading-horizontal"><span>Recent searches</span></h3>
+        @if (Model.RecentSearches.Any())
+        {
+            <ol>
+                @foreach (var search in Model.RecentSearches.Take(10))
+                {
+                    <li><a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list", search = search})">@search</a></li>
+                }
+            </ol>
+        }
+        else
+        {
+            <p>
+                Start here by searching for avaliable assets.
+            </p>
+            <p><a class="btn btn-default" href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list"})">Search &raquo;</a></p>
+        }
+    </div>
+
+    <div class="one_third tt-column top-five">
+        <h3 class="heading-horizontal"><span>Recent Categories</span></h3>
+        @if (Model.AllCategories.Any())
+        {
+            <ol>
+                @foreach (var category in Model.AllCategories.Take(10))
+                {
+                    <li><a href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list", category = category.UriString})">@category.Name (@category.Count)</a></li>
+                }
+            </ol>
+        }
+        else
+        {
+            <p>
+                Start here by browsing for avaliable assets.
+            </p>
+            <p><a class="btn btn-default" href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "list"})">Browse &raquo;</a></p>
+        }
+    </div>
+
+</div>
+
+@if (Model.SiteSettings.Features.Contains("selfupload"))
+{
+    <div class="tt-icon-box-fixed padding-10 all-assets" style="margin:20px 0 20px 0;">
+        <h3 class="heading-horizontal"><span>Upload Assets</span></h3>
+        @{
+            <span style="padding-right: 10px;">
+                List your equipment for redeployment to other departments.
+            </span>
+            <a class="btn btn-primary btn-sm" style="font-size: 18px;padding: 4px 10px 4px; margin-top: -10px;" href="@Url.RouteUrl("PortalRoute", new {action = "index", controller = "drafts"})">
+                Enter Assets &raquo;
+            </a>
+        }
+    </div>
+}
+
+@if (Model.RecentlyAddedAssets.Any())
+{
+    <br class="clear">
+    <h3 class="heading-horizontal" style="margin:20px 0 20px 0; background-color: #f4f4f2 !important;"><span>Recently added</span></h3>
+    <div id="tt-gallery-iso-wrap" class="tt-gallery-iso-wrap clearfix">
+        @foreach (var asset in Model.RecentlyAddedAssets.Take(4))
+        {
+            <div data-id="id-@asset.Id" class="one_fourth term-72 term-76 ">
+                <div class="shadow_img_frame shadow_four_col_large gallery">
+                    <div class="img-preload lightbox-img">
+                        <a href='@MyHelpers.ImageUrl(Html, Model.SiteSettings.PortalTag, asset.Media.FirstOrDefault(), "i")' class='attachment-fadeIn' data-gal='prettyPhoto' title=''>
+                            <div class="lightbox-zoom zoom-4" style="position:absolute; display: none;">
+                                @asset.Title
+                            </div>
+                            @MyHelpers.LargeThumbnailImage(Model.SiteSettings.PortalTag, asset.Media.FirstOrDefault(), asset.Title, "crop")
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <br class="clear" />
+        }
+    </div>
+}
+
+@if (Model.RecentlyViewedAssets.Any())
+{
+    <br class="clear">
+    <h3 class="heading-horizontal" style="margin:20px 0 20px 0; background-color: #f4f4f2 !important;"><span>Recently viewed</span></h3>
+    <div id="tt-gallery-iso-wrap2" class="tt-gallery-iso-wrap clearfix">
+        @foreach (var asset in Model.RecentlyViewedAssets.Take(4))
+        {
+            <div data-id="id-@asset.Id" class="one_fourth term-72 term-76 ">
+                <div class="shadow_img_frame shadow_four_col_large gallery">
+                    <div class="img-preload lightbox-img">
+                        <a href='@MyHelpers.ImageUrl(Html, Model.SiteSettings.PortalTag, asset.Media.FirstOrDefault(), "i")' class='attachment-fadeIn' data-gal='prettyPhoto' title=''>
+                            <div class="lightbox-zoom zoom-4" style="position:absolute; display: none;">
+                                @asset.Title
+                            </div>
+                            @MyHelpers.LargeThumbnailImage(Model.SiteSettings.PortalTag, asset.Media.FirstOrDefault(), asset.Title, "crop")
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <br class="clear" />
+        }
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("img.crop").resizeAndCrop({ width: 175, height: 132 });
+        });
+    </script>
+}

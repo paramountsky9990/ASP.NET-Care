@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Confirm Email";
+    Layout = "~/Views/Shared/_PortalLayout.cshtml";
+}
+
+<h2>@ViewBag.Title.</h2>
+<div>
+    <p>
+        Thank you for confirming your email. Please @Html.RouteLink("click here to sign in", "PortalRoute", new { controller = "Account", action = "Login" }, new { id = "loginLink" })
+    </p>
+</div>

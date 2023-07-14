@@ -1,0 +1,34 @@
+﻿<p>
+    This email is to inform you that [DraftAsset.OwnerFirstName] [DraftAsset.OwnerLastName] has placed an asset on CARE for review. This request
+    requires your approval before it can be processed.<br />   <br />   To approve or deny this asset, please
+    click on this link:<br />   <br />
+    <a href="[ApprovalURL]">[ApprovalURL]</a><br />   <br />
+
+</p>  <br />
+
+<img id="assetImageDeniedET" class="padding-bottom-10 margin-left-10 img-container"
+     src="[PrimaryImageUrl]" alt="" /> <br /><br />
+
+<b>Asset Description</b><br />
+Title: [DraftAsset.Title]<br />
+Manufacturer: [DraftAsset.Manufacturer]<br />
+Model: [DraftAsset.ModelNumber]<br />
+Category: [DraftAsset.Category]<br />
+Location: [DraftAsset.Location]<br />
+Hit Number:  [DraftAsset.HitNumber]<br />
+[if DraftAsset.HasClientIdNumber]
+ClientID Number : [DraftAsset.ClientIdNumber]<br />
+[end]
+[if DraftAsset.DisplayBookValue]
+Book value: [DraftAsset.FormattedBookValue]<br />
+[else]
+Book value: [SiteSettings.BookValueMessage]<br />
+[end]
+<br />
+<b>Owner Details</b><br />
+Name:[DraftAsset.OwnerFirstName] [DraftAsset.OwnerLastName]<br />
+Email: [DraftAsset.OwnerEmail]<br />
+Phone: [DraftAsset.OwnerPhone]
+
+<br />   <br />
+

@@ -1,0 +1,110 @@
+﻿@using System.Web.Mvc
+@using HGP.Web.Models.Admin
+@using HtmlHelper = System.Web.Mvc.HtmlHelper
+@using System.Web.Mvc.Html
+@using HGP.Web.Models
+@using HGP.Web.Utilities
+
+@helper FormatCurrency(HtmlHelper html, string numberIn)
+{
+    decimal number = 0;
+    string result;
+    if (Decimal.TryParse(numberIn, out number))
+    {
+        result = string.Format("{0:C0}", number);
+        <strong>@html.Raw(string.Format("{0:C0}",result))</strong>
+    }
+    else
+    {
+        <strong>@numberIn</strong>
+    }
+
+
+
+}
+
+@helper FormatCurrency(HtmlHelper html, decimal number)
+{
+    <strong>@html.Raw(string.Format("{0:C0}", number))</strong>
+}
+
+@helper Pluralize(HtmlHelper html, string str, int num, bool isStrong = true)
+{
+    if (isStrong)
+    {
+        <strong>@html.Raw(str.Pluralize(num))</strong>
+    }
+    else
+    {
+        @html.Raw(str.Pluralize(num))
+    }
+}
+
+
+@helper ThumbnailImage(HtmlHelper html, string portalTag, string fileName, string altText = "")
+{
+    <img src="//s3-us-west-1.amazonaws.com/hgpmedia/@portalTag/t/@fileName" alt="@altText" />
+}
+
+@helper ImageUrl(HtmlHelper html, string portalTag, AdminAssetsHomeGridMediaModel mediaFile, string imgType = "l")
+{
+    if (mediaFile == null)
+    {
+        @html.Raw("//placehold.it/848x561&text=No%20Image")
+
+    }
+    else
+    {
+        @html.Raw(string.Format("//s3-us-west-1.amazonaws.com/hgpmedia/{0}/{2}/{1}", portalTag, mediaFile.FileName, imgType))
+    }
+}
+
+@helper DraftImageUrl(HtmlHelper html, string portalTag, string userId, MediaFileDto mediaFile, string imgType = "l")
+{
+    if (mediaFile == null)
+    {
+        @html.Raw("//placehold.it/848x561&text=No%20Image")
+
+    }
+    else
+    {
+        @html.Raw(string.Format("//s3-us-west-1.amazonaws.com/hgpmedia/{0}/drafts/{1}/{2}/{3}", portalTag, userId, imgType, mediaFile.FileName))
+    }
+}
+
+
+@helper LargeThumbnailImage(string portalTag, AdminAssetsHomeGridMediaModel mediaFile, string altText = "", string className = "", string imgType = "l")
+{
+    if (mediaFile == null)
+    {
+        <img class="@className" src="//placehold.it/176x134&text=No%20Image" alt="@altText" />
+
+    }
+    else
+    {
+        <img class="@className" src="//placehold.it/176x134&text=+" realsrc="//s3-us-west-1.amazonaws.com/hgpmedia/@portalTag/@imgType/@mediaFile.FileName" alt="@altText" />
+    }
+}
+
+
+@helper AssetUrl(UrlHelper url, HtmlHelper html, string title, string portalTag, string hitNumber)
+{
+    var modalContentUrl = url.RouteUrl("PortalRoute", new { controller = "Asset", action = "IndexPartial", id = hitNumber });
+    @html.RouteLink(title, "PortalRoute", new { controller = "Asset", action = "Index", id = hitNumber }, new { data_toggle = "modal", data_target = "#myAssetModal", href = modalContentUrl })
+}
+
+@helper PortalCategoryUrl(UrlHelper url, string actionName, string controllerName, string tag)
+{
+    @url.RouteUrl("PortalRoute", new { action = @actionName, controller = @controllerName, category = @tag })
+}
+
+@helper PortalLocationUrl(UrlHelper url, string actionName, string controllerName, string tag, string activeCategory)
+{
+    @url.RouteUrl("PortalRoute", new { action = @actionName, controller = @controllerName, location = @tag, category = @activeCategory })
+}
+
+
+@helper PortalUrl(UrlHelper url, string actionName, string controllerName, string tag)
+{
+    @url.RouteUrl("PortalRoute", new { action = @actionName, controller = @controllerName, category = @tag })
+}
